@@ -159,14 +159,14 @@ namespace Tomasulo
         // Function name   : ConstructInstructionFullName         
         // Description     : constructing the long and full syntax of instruction
         // Return type     : string 
-        // Argument        : int instructionIdx
+        // Argument        : int InstructionIndex
         //============================================================
-        private static string ConstructInstructionFullName(int instructionIdx)
+        private static string ConstructInstructionFullName(int InstructionIndex)
         {
-            return InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString()
-                + " " + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString()
-                + ", " + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()
-                + ", "+ InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString();
+            return InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString()
+                + " " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString()
+                + ", " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()
+                + ", "+ InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString();
         }
         private static void LoadDefaults()
         {

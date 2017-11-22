@@ -308,14 +308,14 @@ namespace Tomasulo
         // Function name   : ConstructInstructionFullName        
         // Description     : this method constructs the full syntax of instruction from the Instruction set defined in the program
         // Return type     : string 
-        // Argument        : int instructionIdx
+        // Argument        : int InstructionIndex
         -------------------------------------------------------------------------------------------------------------------------*/
-        private string ConstructInstructionFullName(int instructionIdx)
+        private string ConstructInstructionFullName(int InstructionIndex)
         {
-            return InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString()
-                + " " + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString()
-                + ", " + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()
-                + ", " + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString(); //Execution order differentiaL
+            return InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString()
+                + " " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString()
+                + ", " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()
+                + ", " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString(); //Execution order differentiaL
         }
 
 
@@ -324,17 +324,17 @@ namespace Tomasulo
         // Function name   : HandleThreeInsPerCycle         
         // Description     : for given instruction ,  for each FU , handles the state of 3 issues in one cycle
         // Return type     : void 
-        // Argument        : int instructionIdx
+        // Argument        : int InstructionIndex
         // Argument        : int numOfInsPerCycle
         // Argument        : int IterationNum
         // Argument        : int clock
         //============================================================
-        private void HandleIssueThreeInsPerCycle(int instructionIdx, int numOfInsPerCycle, int IterationNum, int clock) 
+        private void HandleIssueThreeInsPerCycle(int InstructionIndex, int numOfInsPerCycle, int IterationNum, int clock) 
         {
             IsInstructionIssued = false;
-            currentInstFullName = ConstructInstructionFullName(instructionIdx);
+            currentInstFullName = ConstructInstructionFullName(InstructionIndex);
 
-            if (instructionIdx == 0)
+            if (InstructionIndex == 0)
             {
                 issuePhaseCycles = 1;
 
@@ -342,13 +342,13 @@ namespace Tomasulo
                 {
                     IsInstructionIssued = true;
                     InstructionStatusManager.Insert(IterationNum, currentInstFullName, issuePhaseCycles, 0, 0, 0, 0, ""); // check if InstructionStatusManager recieves the value
-                    InstructionLatest = instructionIdx;
+                    InstructionLatest = InstructionIndex;
                     IssuedInstCounter++;
                 }
             }
             else
             {
-                if (instructionIdx == 0)   // might be redundant-but not working otherwise
+                if (InstructionIndex == 0)   // might be redundant-but not working otherwise
                 {
                     issuePhaseCycles = 1;
 
@@ -361,7 +361,7 @@ namespace Tomasulo
                 }
                 else
                 {
-                    if (instructionIdx > (InstructionLatest) && IssuedInstCounter != numOfInsPerCycle && SameFUCounter == 0)
+                    if (InstructionIndex > (InstructionLatest) && IssuedInstCounter != numOfInsPerCycle && SameFUCounter == 0)
                     {
                         if (InstructionLatest == -1)
                         {
@@ -372,22 +372,22 @@ namespace Tomasulo
                         {
                             if (IssuedInstCounter != 0)
                             {
-                                if ((instructionIdx - InstructionLatest) == 1)
+                                if ((InstructionIndex - InstructionLatest) == 1)
                                 {
-                                    prevInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx - 1]["Instruction Name"].ToString());
-                                    currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString());
+                                    prevInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex - 1]["Instruction Name"].ToString());
+                                    currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString());
                                 }
                                 else
                                 {
-                                    prevInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx - 2]["Instruction Name"].ToString());
-                                    currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString());
+                                    prevInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex - 2]["Instruction Name"].ToString());
+                                    currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString());
                                     ThreeIssueInstHelperFlag = true;
                                 }
                             }
                             else
                             {
                                 prevInstType = "NoInstructionIssued";
-                                currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][0].ToString());
+                                currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][0].ToString());
                             }
                         }
                         else
@@ -395,32 +395,32 @@ namespace Tomasulo
                             if (IssuedInstCounter != 0)
                             {
 
-                                if ((instructionIdx - InstructionLatest) == 2)
+                                if ((InstructionIndex - InstructionLatest) == 2)
                                 {
-                                    prevInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx - 1]["Instruction Name"].ToString());
-                                    currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString());
+                                    prevInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex - 1]["Instruction Name"].ToString());
+                                    currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString());
                                 }
                                 else
                                 {
-                                    prevInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx - 2]["Instruction Name"].ToString());
-                                    currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString());
+                                    prevInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex - 2]["Instruction Name"].ToString());
+                                    currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString());
                                     ThreeIssueInstHelperFlag = true;
                                 }
                             }
                             else
                             {
                                 prevInstType = "NoInstructionIssued";
-                                currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][0].ToString());
+                                currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][0].ToString());
                             }
                         }
 
-                        currentInstName = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString();
+                        currentInstName = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString();
 
                         
                         if (prevInstType.Equals(currentInstType) || currentInstType.Equals("Branch"))
                         {
                             SameFUCounter++;
-                            InstructionLatest = instructionIdx - 1;
+                            InstructionLatest = InstructionIndex - 1;
                             IsInstructionIssued = false;
                             ThreeIssueInstHelperFlag = false;
                         }
@@ -428,14 +428,14 @@ namespace Tomasulo
                         {
                             if (ThreeIssueInstHelperFlag) 
                             {
-                                prevInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx - 1]["Instruction Name"].ToString());
-                                currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString());
-                                currentInstName = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString();
+                                prevInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex - 1]["Instruction Name"].ToString());
+                                currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString());
+                                currentInstName = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString();
 
                                 if (prevInstType.Equals(currentInstType) || currentInstType.Equals("Branch"))
                                 {
                                     SameFUCounter++;
-                                    InstructionLatest = instructionIdx - 1;
+                                    InstructionLatest = InstructionIndex - 1;
                                     IsInstructionIssued = false;
                                     ThreeIssueInstHelperFlag = false;
                                 }
@@ -447,7 +447,7 @@ namespace Tomasulo
                                     IsInstructionIssued = true;
                                     InstructionStatusManager.Insert(IterationNum, currentInstFullName, issuePhaseCycles, 0, 0, 0, 0, "");
 
-                                    if (instructionIdx == InstructionFromInput.InstructionsFromInputDT().Rows.Count - 1)
+                                    if (InstructionIndex == InstructionFromInput.InstructionsFromInputDT().Rows.Count - 1)
                                     {
                                         IssuedInstCounter = numOfInsPerCycle;
                                     }
@@ -461,7 +461,7 @@ namespace Tomasulo
                                 IsInstructionIssued = true;
                                 InstructionStatusManager.Insert(IterationNum, currentInstFullName, issuePhaseCycles, 0, 0, 0, 0, "");
 
-                                if (instructionIdx == InstructionFromInput.InstructionsFromInputDT().Rows.Count - 1)
+                                if (InstructionIndex == InstructionFromInput.InstructionsFromInputDT().Rows.Count - 1)
                                 {
                                     IssuedInstCounter = numOfInsPerCycle;
                                 }
@@ -472,16 +472,16 @@ namespace Tomasulo
 
                     }
 
-                    if (IssuedInstCounter == 0 && instructionIdx > InstructionLatest)
+                    if (IssuedInstCounter == 0 && InstructionIndex > InstructionLatest)
                     {
                         issuePhaseCycles = clock;
                         IssuedInstCounter++;
                         IsInstructionIssued = true;
                         InstructionStatusManager.Insert(IterationNum, currentInstFullName, issuePhaseCycles, 0, 0, 0, 0, "");
 
-                        if (instructionIdx == InstructionFromInput.InstructionsFromInputDT().Rows.Count - 1)
+                        if (InstructionIndex == InstructionFromInput.InstructionsFromInputDT().Rows.Count - 1)
                         {
-                            InstructionLatest = instructionIdx;
+                            InstructionLatest = InstructionIndex;
                             IssuedInstCounter = numOfInsPerCycle;
 
                         }
@@ -495,18 +495,18 @@ namespace Tomasulo
                 if (IssuedInstCounter == numOfInsPerCycle)
                 {
                     IsInstructionIssued = false;
-                    InstructionLatest = instructionIdx;
+                    InstructionLatest = InstructionIndex;
                 }
                 switch (currentInstType)
                 {
                     case "LD/SD":
                         if (currentInstName.Equals("LD") || currentInstName.Equals("L.D"))
                         {
-                            result = "Mem[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + " + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]]";
-                         //   result = "Mem[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + " + "RegisterResultStatus.RegisterResultStatusDT().Rows[2][];
+                            result = "Mem[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + " + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]]";
+                         //   result = "Mem[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + " + "RegisterResultStatus.RegisterResultStatusDT().Rows[2][];
                             if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                             {
-                                destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                                destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
                                 if (issuePhaseCycles == clock)
                                 {
                                     RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, "ROB" + (ReorderBuffer.GetBusyFalseItem()).ToString(), "Yes");
@@ -521,37 +521,37 @@ namespace Tomasulo
                             }
                             if (issuePhaseCycles == clock)
                             {
-                                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result,"");
+                                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result,"");
                                 LoadBuffer.Update(LoadBuffer.GetBusyFalseItem(), true, result);
                             }
                         }
                         else 
                         {
-                            result = "Mem[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + " + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]]";
+                            result = "Mem[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + " + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]]";
                             if (issuePhaseCycles == clock)
                             {
-                                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", result, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(),"");
+                                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", result, InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(),"");
                             }
                         }
                         break;
                     case "FP Add":
                         if (currentInstName.Equals("ADD.D"))
                         {
-                            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "] + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
+                            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "] + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
 
-                            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString() + " + " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString() +" = "
-                                + (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString()) +  Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString())).ToString();
+                            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString() + " + " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString() +" = "
+                                + (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString()) +  Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString())).ToString();
                             //result = result + " -> " +CalcResult;
-                            if (instructionIdx == InstructionFromInput.InstructionsFromInputDT().Rows.Count -1)
+                            if (InstructionIndex == InstructionFromInput.InstructionsFromInputDT().Rows.Count -1)
                             {
                                 if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                                 {
-                                    destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                                    destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
 
                                     if (issuePhaseCycles == clock)
                                     {
-                                        RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][0].ToString(), "Yes");
-                                        ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result, calcResult);
+                                        RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][0].ToString(), "Yes");
+                                        ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result, calcResult);
                                     }
                                 }
                                 else
@@ -567,16 +567,16 @@ namespace Tomasulo
                             {
                                 if (issuePhaseCycles == clock)
                                 {
-                                    ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result, calcResult);
+                                    ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result, calcResult);
                                 }
 
                                 if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                                 {
-                                    destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                                    destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
 
                                     if (issuePhaseCycles == clock)
                                     {
-                                        RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][0].ToString(), "Yes");
+                                        RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][0].ToString(), "Yes");
                                     }
                                 }
                                 else
@@ -592,18 +592,18 @@ namespace Tomasulo
                         }
                         else
                         {
-                            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "] - Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
+                            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "] - Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
 
-                            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString() + " - " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString() + " = "
-                                + (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString()) - Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString())).ToString();
+                            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString() + " - " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString() + " = "
+                                + (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString()) - Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString())).ToString();
                             
                             if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                             {
-                                destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                                destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
 
                                 if (issuePhaseCycles == clock)
                                 {
-                                    RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][0].ToString(), "Yes");
+                                    RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][0].ToString(), "Yes");
                                 }
                             }
                             else
@@ -615,63 +615,63 @@ namespace Tomasulo
                             }
                             if (issuePhaseCycles == clock)
                             {
-                                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result, calcResult);
+                                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result, calcResult);
                             }
 
 
 
                         }
 
-                        if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()) != "")
+                        if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()) != "")
                         {
-                            qj = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString());
+                            qj = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString());
                             vj = string.Empty;
                         }
                         else
                         {
                             qj = string.Empty;
-                            vj = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "]";
+                            vj = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "]";
                         }
 
-                        if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()) != "")
+                        if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()) != "")
                         {
-                            qk = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString());
+                            qk = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString());
                             vk = string.Empty;
                         }
                         else
                         {
                             qk = string.Empty;
-                            vk = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
+                            vk = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
                         }
 
-                        destination = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString());
+                        destination = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString());
 
                         if (issuePhaseCycles == clock)
                         {
-                            ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Add"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString(), vj, vk, qj, qk, destination, instructionIdx);
+                            ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Add"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString(), vj, vk, qj, qk, destination, InstructionIndex);
                         }
                         break;
                     case "FP Multiply":
                         if (currentInstName.Equals("MUL.D"))
                         {
-                            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "] * Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
+                            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "] * Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
 
-                            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString() + " * " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString() + " = "
-                              + (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString()) * Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString())).ToString();
+                            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString() + " * " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString() + " = "
+                              + (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString()) * Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString())).ToString();
                             
 
                             if (issuePhaseCycles == clock)
                             {
-                                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result, calcResult);
+                                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result, calcResult);
                             }
 
                             if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                             {
-                                destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                                destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
 
                                 if (issuePhaseCycles == clock)
                                 {
-                                    RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][0].ToString(), "Yes");
+                                    RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][0].ToString(), "Yes");
                                 }
                             }
                             else
@@ -684,24 +684,24 @@ namespace Tomasulo
                         }
                         else
                         {
-                            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "] / Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
+                            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "] / Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
 
-                            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString() + " / " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString() + " = "
-                      + (Convert.ToDouble(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString()) / Convert.ToDouble(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString())).ToString();
+                            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString() + " / " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString() + " = "
+                      + (Convert.ToDouble(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString()) / Convert.ToDouble(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString())).ToString();
                     
 
                             if (issuePhaseCycles == clock)
                             {
-                                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result, calcResult);
+                                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result, calcResult);
                             }
 
                             if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                             {
-                                destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                                destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
 
                                 if (issuePhaseCycles == clock)
                                 {
-                                    RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][0].ToString(), "Yes");
+                                    RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][0].ToString(), "Yes");
                                 }
                             }
                             else
@@ -713,45 +713,45 @@ namespace Tomasulo
                             }
                         }
 
-                        if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()) != "")
+                        if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()) != "")
                         {
-                            qj = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString());
+                            qj = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString());
                             vj = string.Empty;
                         }
                         else
                         {
                             qj = string.Empty;
-                            vj = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "]";
+                            vj = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "]";
                         }
 
-                        if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()) != "")
+                        if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()) != "")
                         {
-                            qk = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString());
+                            qk = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString());
                             vk = string.Empty;
                         }
                         else
                         {
                             qk = string.Empty;
-                            vk = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
+                            vk = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
                         }
 
-                        destination = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString());
+                        destination = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString());
                         if (issuePhaseCycles == clock)
                         {
-                            ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Multiply"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString(), vj, vk, qj, qk, destination,instructionIdx);
+                            ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Multiply"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString(), vj, vk, qj, qk, destination,InstructionIndex);
                         }
 
                         break;
                     case "Branch":
-                        if (InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString().Equals("BEQ") 
-                        || InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString().Equals("BNE"))
+                        if (InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString().Equals("BEQ") 
+                        || InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString().Equals("BNE"))
                         {
-                            result = "Address[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
+                            result = "Address[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
                         }
-                        else if (InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString().Equals("BEQZ")
-                            || InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString().Equals("BNEZ"))
+                        else if (InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString().Equals("BEQZ")
+                            || InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString().Equals("BNEZ"))
                         {
-                            result = "Address[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "]";
+                            result = "Address[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "]";
                         }
 
                         if (issuePhaseCycles == clock)
@@ -760,25 +760,25 @@ namespace Tomasulo
                         }
                         break;
                     case "Integer":
-                        result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "] + " + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString();
+                        result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "] + " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString();
 
-                        calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString() + " + " + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + " = "
-  + (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString()) + Convert.ToInt32(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString())).ToString();
+                        calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString() + " + " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + " = "
+  + (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString()) + Convert.ToInt32(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString())).ToString();
 
-                        ResevationsStationUpdater(instructionIdx);
+                        ResevationsStationUpdater(InstructionIndex);
 
                         if (issuePhaseCycles == clock)
                         {
-                            ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("INTADD"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][0].ToString(), vj, vk, qj, qk, destination, instructionIdx);
+                            ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("INTADD"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][0].ToString(), vj, vk, qj, qk, destination, InstructionIndex);
                         }
                         if (issuePhaseCycles == clock)
                         {
-                            ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result, calcResult);
+                            ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result, calcResult);
                         }
 
                         if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                         {
-                            destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                            destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
 
                             if (issuePhaseCycles == clock)
                             {
@@ -811,17 +811,17 @@ namespace Tomasulo
          Function name   : HandleTwoInsPerCycle        
          Description     : for given instruction ,  for each FU , handles the state of 2 issues in on cycle
          Return type     : void 
-         Argument        : int instructionIdx
+         Argument        : int InstructionIndex
          Argument        : int numOfInsPerCycle
          Argument        : int IterationNum
          Argument        : int clock
         ---------------------------------------------------------------------------------------------------*/
-        private void HandleIssueTwoInsPerCycle(int instructionIdx, int numOfInsPerCycle, int IterationNum, int clock)
+        private void HandleIssueTwoInsPerCycle(int InstructionIndex, int numOfInsPerCycle, int IterationNum, int clock)
         {
             IsInstructionIssued = false;
-            currentInstFullName = ConstructInstructionFullName(instructionIdx);
+            currentInstFullName = ConstructInstructionFullName(InstructionIndex);
 
-            if (instructionIdx == 0)
+            if (InstructionIndex == 0)
             {
                 issuePhaseCycles = 1;
 
@@ -834,7 +834,7 @@ namespace Tomasulo
             }
             else
             {
-                if (instructionIdx == 0)
+                if (InstructionIndex == 0)
                 {
                     issuePhaseCycles = 1;
 
@@ -848,18 +848,18 @@ namespace Tomasulo
                 else
                 {
 
-                    if (instructionIdx > (InstructionLatest + 1) && IssuedInstCounter != numOfInsPerCycle && SameFUCounter == 0)
+                    if (InstructionIndex > (InstructionLatest + 1) && IssuedInstCounter != numOfInsPerCycle && SameFUCounter == 0)
                     {
                         if (InstructionLatest == -1)
                         {
                             InstructionLatest = 0;
 
 
-                            for (int i = instructionIdx; i > InstructionLatest; i--)
+                            for (int i = InstructionIndex; i > InstructionLatest; i--)
                             {
                                 prevInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[i - 1]["Instruction Name"].ToString());
                                 currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[i]["Instruction Name"].ToString());
-                                currentInstName = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString();
+                                currentInstName = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString();
 
                                 if (prevInstType.Equals(currentInstType) ||currentInstName.Equals("Branch") || prevInstType.Equals("Branch"))
                                 {
@@ -900,16 +900,16 @@ namespace Tomasulo
                         }
                         else
                         {
-                            for (int i = instructionIdx; i > (InstructionLatest + 1); i--)
+                            for (int i = InstructionIndex; i > (InstructionLatest + 1); i--)
                             {
                                 prevInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[i - 1]["Instruction Name"].ToString());
                                 currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[i]["Instruction Name"].ToString());
-                                currentInstName = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString();
+                                currentInstName = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString();
 
                                 if (string.Compare(prevInstType, currentInstType) == 0 || string.Compare(currentInstType, "Branch") == 0 || string.Compare(prevInstType, "Branch") == 0)
                                 {
                                     SameFUCounter++;
-                                    InstructionLatest = instructionIdx - 1;
+                                    InstructionLatest = InstructionIndex - 1;
                                     IsInstructionIssued = false;
                                 }
 
@@ -926,16 +926,16 @@ namespace Tomasulo
                         }
                     }
                 }
-                    if (IssuedInstCounter == 0 && instructionIdx > InstructionLatest)
+                    if (IssuedInstCounter == 0 && InstructionIndex > InstructionLatest)
                     {
                         issuePhaseCycles = clock;
                         IssuedInstCounter++;
                         IsInstructionIssued = true;
                         InstructionStatusManager.Insert(IterationNum, currentInstFullName, issuePhaseCycles, 0, 0, 0, 0, "");
 
-                        if (instructionIdx == InstructionFromInput.InstructionsFromInputDT().Rows.Count - 1)
+                        if (InstructionIndex == InstructionFromInput.InstructionsFromInputDT().Rows.Count - 1)
                         {
-                            InstructionLatest = instructionIdx;
+                            InstructionLatest = InstructionIndex;
                             IssuedInstCounter = numOfInsPerCycle;
 
                         }
@@ -949,18 +949,18 @@ namespace Tomasulo
                     if (IssuedInstCounter == numOfInsPerCycle)
                     {
                         IsInstructionIssued = false;
-                        InstructionLatest = instructionIdx;
+                        InstructionLatest = InstructionIndex;
                     }
                     switch (currentInstType)
                     {
                         case "LD/SD":
                             if (currentInstName.Equals("LD") || currentInstName.Equals("L.D"))
                             {
-                                result = "Mem[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + " + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]]";
+                                result = "Mem[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + " + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]]";
 
                                 if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                                 {
-                                    destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                                    destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
                                     if (issuePhaseCycles == clock)
                                     {
                                         RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, "ROB" + (ReorderBuffer.GetBusyFalseItem()).ToString(), "Yes");
@@ -975,38 +975,38 @@ namespace Tomasulo
                                 }
                                 if (issuePhaseCycles == clock)
                                 {
-                                    ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result,"");
+                                    ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result,"");
                                     LoadBuffer.Update(LoadBuffer.GetBusyFalseItem(), true, result);
                                 }
                             }
                             else
                             {
-                                result = "Mem[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + " + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]]";
+                                result = "Mem[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + " + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]]";
                                 if (issuePhaseCycles == clock)
                                 {
-                                    ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", result, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(),"");
+                                    ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", result, InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(),"");
                                 }
                             }
                             break;
                         case "FP Add":
                             if (currentInstName.Equals("ADD.D"))
                             {
-                                result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "] + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
+                                result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "] + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
 
-                                calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString() + " + " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString() + " = "
-+ (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString()) + Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString())).ToString();
+                                calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString() + " + " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString() + " = "
++ (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString()) + Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString())).ToString();
        
 
-                                if (instructionIdx == InstructionFromInput.InstructionsFromInputDT().Rows.Count - 1)
+                                if (InstructionIndex == InstructionFromInput.InstructionsFromInputDT().Rows.Count - 1)
                                 {
                                     if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                                     {
-                                        destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                                        destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
 
                                         if (issuePhaseCycles == clock)
                                         {
-                                            RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][0].ToString(), "Yes");
-                                            ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result,calcResult);
+                                            RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][0].ToString(), "Yes");
+                                            ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result,calcResult);
                                         }
                                     }
                                     else
@@ -1022,16 +1022,16 @@ namespace Tomasulo
                                 {
                                     if (issuePhaseCycles == clock)
                                     {
-                                        ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result,calcResult);
+                                        ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result,calcResult);
                                     }
 
                                     if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                                     {
-                                        destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                                        destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
 
                                         if (issuePhaseCycles == clock)
                                         {
-                                            RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][0].ToString(), "Yes");
+                                            RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][0].ToString(), "Yes");
                                         }
                                     }
                                     else
@@ -1047,18 +1047,18 @@ namespace Tomasulo
                             }
                             else
                             {
-                                result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "] - Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
-                                calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString() + " - " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString() + " = "
-+ (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString()) - Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString())).ToString();
+                                result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "] - Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
+                                calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString() + " - " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString() + " = "
++ (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString()) - Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString())).ToString();
        
 
                                 if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                                 {
-                                    destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                                    destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
 
                                     if (issuePhaseCycles == clock)
                                     {
-                                        RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][0].ToString(), "Yes");
+                                        RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][0].ToString(), "Yes");
                                     }
                                 }
                                 else
@@ -1070,63 +1070,63 @@ namespace Tomasulo
                                 }
                                 if (issuePhaseCycles == clock)
                                 {
-                                    ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result,calcResult);
+                                    ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result,calcResult);
                                 }
 
 
 
                             }
 
-                            if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()) != "")
+                            if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()) != "")
                             {
-                                qj = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString());
+                                qj = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString());
                                 vj = string.Empty;
                             }
                             else
                             {
                                 qj = string.Empty;
-                                vj = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "]";
+                                vj = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "]";
                             }
 
-                            if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()) != "")
+                            if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()) != "")
                             {
-                                qk = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString());
+                                qk = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString());
                                 vk = string.Empty;
                             }
                             else
                             {
                                 qk = string.Empty;
-                                vk = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
+                                vk = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
                             }
 
-                            destination = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString());
+                            destination = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString());
 
                             if (issuePhaseCycles == clock)
                             {
-                                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Add"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString(), vj, vk, qj, qk, destination,instructionIdx);
+                                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Add"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString(), vj, vk, qj, qk, destination,InstructionIndex);
                             }
                             break;
                         case "FP Multiply":
                             if (currentInstName.Equals("MUL.D"))
                             {
-                                result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "] * Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
+                                result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "] * Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
 
-                                calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString() + " * " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString() + " = "
-+ (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString()) * Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString())).ToString();
+                                calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString() + " * " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString() + " = "
++ (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString()) * Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString())).ToString();
        
 
                                 if (issuePhaseCycles == clock)
                                 {
-                                    ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result,calcResult);
+                                    ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result,calcResult);
                                 }
 
                                 if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                                 {
-                                    destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                                    destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
 
                                     if (issuePhaseCycles == clock)
                                     {
-                                        RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][0].ToString(), "Yes");
+                                        RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][0].ToString(), "Yes");
                                     }
                                 }
                                 else
@@ -1139,25 +1139,25 @@ namespace Tomasulo
                             }
                             else
                             {
-                                result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "] / Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
+                                result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "] / Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
 
-                                calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString() + " / " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString() + " = "
-+ (Convert.ToDouble(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString()) / Convert.ToDouble(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString())).ToString();
+                                calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString() + " / " + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString() + " = "
++ (Convert.ToDouble(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString()) / Convert.ToDouble(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString())).ToString();
        
 
                                 if (issuePhaseCycles == clock)
                                 {
-                                    ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result,calcResult);
+                                    ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result,calcResult);
                                 }
 
 
                                 if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                                 {
-                                    destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                                    destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
 
                                     if (issuePhaseCycles == clock)
                                     {
-                                        RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][0].ToString(), "Yes");
+                                        RegisterStatus.Update((int.Parse(destination.Substring(1))) + 1, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][0].ToString(), "Yes");
                                     }
                                 }
                                 else
@@ -1169,45 +1169,45 @@ namespace Tomasulo
                                 }
                             }
 
-                            if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()) != "")
+                            if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()) != "")
                             {
-                                qj = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString());
+                                qj = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString());
                                 vj = string.Empty;
                             }
                             else
                             {
                                 qj = string.Empty;
-                                vj = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "]";
+                                vj = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "]";
                             }
 
-                            if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()) != "")
+                            if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()) != "")
                             {
-                                qk = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString());
+                                qk = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString());
                                 vk = string.Empty;
                             }
                             else
                             {
                                 qk = string.Empty;
-                                vk = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
+                                vk = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
                             }
 
-                            destination = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString());
+                            destination = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString());
                             if (issuePhaseCycles == clock)
                             {
-                                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Multiply"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString(), vj, vk, qj, qk, destination, instructionIdx);
+                                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Multiply"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString(), vj, vk, qj, qk, destination, InstructionIndex);
                             }
 
                             break;
                         case "Branch":
-                            if (InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString().Equals("BEQ")
-                            || InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString().Equals("BNE"))
+                            if (InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString().Equals("BEQ")
+                            || InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString().Equals("BNE"))
                             {
-                                result = "Address[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]";
+                                result = "Address[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]";
                             }
-                            else if (InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString().Equals("BEQZ")
-                                || InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString().Equals("BNEZ"))
+                            else if (InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString().Equals("BEQZ")
+                                || InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString().Equals("BNEZ"))
                             {
-                                result = "Address[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "]";
+                                result = "Address[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "]";
                             }
 
                             if (issuePhaseCycles == clock)
@@ -1216,12 +1216,12 @@ namespace Tomasulo
                             }
                             break;
                         case "Integer":
-                            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + "] + " + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString();
+                            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + "] + " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString();
 
-                            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString() + " + " + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + " = "
-      + (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString()) + Convert.ToInt32(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString())).ToString();
+                            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString() + " + " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + " = "
+      + (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString()) + Convert.ToInt32(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString())).ToString();
           
-                            destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                            destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
                             if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
                             {
 
@@ -1242,15 +1242,15 @@ namespace Tomasulo
                             {
                                 destination = ReorderBuffer.GetRobNum(destination);
                             }
-                            ResevationsStationUpdater(instructionIdx);
+                            ResevationsStationUpdater(InstructionIndex);
 
                             if (issuePhaseCycles == clock)
                             {
-                                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("INTADD"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][0].ToString(), vj, vk, qj, qk, destination, instructionIdx);
+                                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("INTADD"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][0].ToString(), vj, vk, qj, qk, destination, InstructionIndex);
                             }
                             if (issuePhaseCycles == clock)
                             {
-                                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString(), result,calcResult);
+                                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString(), result,calcResult);
                             }
                             break;
 
@@ -1268,7 +1268,7 @@ namespace Tomasulo
          Function name   : HandleOneInsPerCycle        
          Description     : this method handles the FU control for every given instruction by verifying the condition for one issue in every cycle.
          Return type     : void 
-         Argument        : int instructionIdx
+         Argument        : int InstructionIndex
          Argument        : int IterationNum
          Argument        : int clock
         ------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -1322,20 +1322,20 @@ namespace Tomasulo
          Function name   : HandleOneIssueINT         
          Description     : this method hanldes Integer operations 
          Return type     : void 
-         Argument        : int instructionIdx
+         Argument        : int InstructionIndex
          Argument        : int clock
         --------------------------------------------------------*/
-        private void HandleOneIssueINT(int instructionIdx, int clock)
+        private void HandleOneIssueINT(int InstructionIndex, int clock)
         {
-            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][2].ToString() + "] + " + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][3].ToString();
+            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][2].ToString() + "] + " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][3].ToString();
 
-            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString() + " + " + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + " = "
-+ (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString()) + Convert.ToInt32(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString())).ToString();
+            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString() + " + " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + " = "
++ (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString()) + Convert.ToInt32(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString())).ToString();
           
 
             if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
             {
-                destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+                destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
                 if (issuePhaseCycles == clock)
                 {
                     RegisterStatus.Update((int.Parse(destination.Substring(1))) + 33, "ROB" + (ReorderBuffer.GetBusyFalseItem()).ToString(), "Yes");
@@ -1348,16 +1348,16 @@ namespace Tomasulo
                     RegisterStatus.Update((int.Parse(destination.Substring(1))) + 33, string.Empty, "No");
                 }
             }
-            ResevationsStationUpdater(instructionIdx);
+            ResevationsStationUpdater(InstructionIndex);
 
             if (issuePhaseCycles == clock)
             {
-                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("INTADD"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][0].ToString(), vj, vk, qj, qk, destination, instructionIdx);
+                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("INTADD"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][0].ToString(), vj, vk, qj, qk, destination, InstructionIndex);
             }
             if (issuePhaseCycles == clock)
             {
-                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][1].ToString(), result,calcResult);
-               // ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("INTADD"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][0].ToString(), vj, vk, qj, qk, Destination, instructionIdx);
+                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][1].ToString(), result,calcResult);
+               // ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("INTADD"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][0].ToString(), vj, vk, qj, qk, Destination, InstructionIndex);
             }
             if (ReorderBuffer.GetRobNum(destination) != "None")             // taking care of an outlier
             {
@@ -1370,20 +1370,20 @@ namespace Tomasulo
          Function name   : HandleOneIssueBranch         
          Description     : this method handles instructions that have branches in them
          Return type     : void 
-         Argument        : int instructionIdx
+         Argument        : int InstructionIndex
          Argument        : int clock
         -----------------------------------------------------------------------------*/
-        private void HandleOneIssueBranch(int instructionIdx, int clock)
+        private void HandleOneIssueBranch(int InstructionIndex, int clock)
         {
-            if (InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][0].ToString().Equals("BEQ") || 
-                InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][0].ToString().Equals("BNE"))
+            if (InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][0].ToString().Equals("BEQ") || 
+                InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][0].ToString().Equals("BNE"))
             {
-                result = "Address[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][3].ToString() + "]";
+                result = "Address[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][3].ToString() + "]";
             }
-            else if (InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][0].ToString().Equals("BEQZ") || 
-                InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][0].ToString().Equals("BNEZ"))
+            else if (InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][0].ToString().Equals("BEQZ") || 
+                InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][0].ToString().Equals("BNEZ"))
             {
-                result = "Address[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][2].ToString() + "]";
+                result = "Address[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][2].ToString() + "]";
             }
 
             if (issuePhaseCycles == clock)
@@ -1397,19 +1397,19 @@ namespace Tomasulo
          Function name   : HandleSingleIssueMult         
          Description     : this method handles all the Multiply operations in the instruction
          Return type     : void 
-         Argument        : int instructionIdx
+         Argument        : int InstructionIndex
          Argument        : int clock
         --------------------------------------------------------------------------------------*/
-        private void HandleSingleIssueMult(int instructionIdx, int clock)
+        private void HandleSingleIssueMult(int InstructionIndex, int clock)
         {
-            ResevationsStationUpdater(instructionIdx);
+            ResevationsStationUpdater(InstructionIndex);
             if (string.Compare(currentInstName, "MUL.D") == 0)
             {
-                HandleSingleIssueMulDiv(instructionIdx, clock, '*');
+                HandleSingleIssueMulDiv(InstructionIndex, clock, '*');
             }
             else
             {
-                HandleSingleIssueMulDiv(instructionIdx, clock, '/');
+                HandleSingleIssueMulDiv(InstructionIndex, clock, '/');
             }
         }
 
@@ -1418,25 +1418,25 @@ namespace Tomasulo
          Function name   : HandleSingleIssueMulDiv         
          Description     : this method handles all the divison functions in the instruction
          Return type     : void 
-         Argument        : int instructionIdx
+         Argument        : int InstructionIndex
          Argument        : int clock
          Argument        : char oper
         ------------------------------------------------------------------------------------*/
-        private void HandleSingleIssueMulDiv(int instructionIdx, int clock, char oper)
+        private void HandleSingleIssueMulDiv(int InstructionIndex, int clock, char oper)
         {
-            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][2].ToString() + "] " + oper + " Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][3].ToString() + "]";
+            result = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][2].ToString() + "] " + oper + " Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][3].ToString() + "]";
 
                 switch (oper)
 	            {
                     case '*':
                         
-            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString() + oper + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString() + " = "
-                         + (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString()) * Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString())).ToString();
+            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString() + oper + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString() + " = "
+                         + (Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString()) * Convert.ToInt32(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString())).ToString();
             break;
                     case '/':
 
-            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString() + oper + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString() + " = "
-                         + (Convert.ToDouble(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString()].ToString()) / Convert.ToDouble(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString()].ToString())).ToString();
+            calcResult = RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString() + oper + RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString() + " = "
+                         + (Convert.ToDouble(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()].ToString()) / Convert.ToDouble(RegisterStatus.RegisterResultStatusDT().Rows[2][InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString()].ToString())).ToString();
             break;
                     default:
                      break;
@@ -1445,7 +1445,7 @@ namespace Tomasulo
                
        
 
-            destination = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString();
+            destination = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString();
             
             if (!ReorderBuffer.ReorderBufferDT().Rows[ReorderBuffer.GetBusyFalseItem()][3].ToString().Equals("Commit"))
             {
@@ -1463,9 +1463,9 @@ namespace Tomasulo
             }
             if (issuePhaseCycles == clock)
             {
-                destination = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString());
-                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][1].ToString(), result,calcResult);
-                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Multiply"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][0].ToString(), vj, vk, qj, qk, destination, instructionIdx);
+                destination = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString());
+                ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][1].ToString(), result,calcResult);
+                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Multiply"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][0].ToString(), vj, vk, qj, qk, destination, InstructionIndex);
             }
         }
 
@@ -1474,25 +1474,25 @@ namespace Tomasulo
          Function name   : HandleIssueAddSubstract         
          Description     : this method handles floating point ADD instructions
          Return type     : void 
-         Argument        : int instructionIdx
+         Argument        : int InstructionIndex
          Argument        : int clock
         -----------------------------------------------------------------------*/
-        private void HandleIssueAddSubstract(int instructionIdx, int clock)
+        private void HandleIssueAddSubstract(int InstructionIndex, int clock)
         {
             if (currentInstName.Equals("ADD.D"))
             {
-                HandleOneIssueAdd(instructionIdx, clock);
+                HandleOneIssueAdd(InstructionIndex, clock);
             }
             else 
             {
-                HandleOneIssueSubstract(instructionIdx, clock);
+                HandleOneIssueSubstract(InstructionIndex, clock);
             }
 
-            ResevationsStationUpdater(instructionIdx);
+            ResevationsStationUpdater(InstructionIndex);
 
             if (issuePhaseCycles == clock)
             {
-                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Add"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][0].ToString(), vj, vk, qj, qk, destination, instructionIdx);
+                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Add"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][0].ToString(), vj, vk, qj, qk, destination, InstructionIndex);
             }
         }
 
@@ -1501,32 +1501,32 @@ namespace Tomasulo
         // Function name   : ResevationsStationUpdater         
         // Description     : this method updates the status of the Reservation Station
         // Return type     : void 
-        // Argument        : int instructionIdx
+        // Argument        : int InstructionIndex
         -----------------------------------------------------------------------------*/
-        private void ResevationsStationUpdater(int instructionIdx)
+        private void ResevationsStationUpdater(int InstructionIndex)
         {
-            if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][2].ToString()) != "")
+            if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][2].ToString()) != "")
             {
-                qj = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][2].ToString());
+                qj = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][2].ToString());
                 vj = string.Empty;
             }
             else
             {
                 qj = string.Empty;
-                vj = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][2].ToString() + "]";
+                vj = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][2].ToString() + "]";
             }
 
-            if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][3].ToString()) != "")
+            if (RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][3].ToString()) != "")
             {
-                qk = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][3].ToString());
+                qk = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][3].ToString());
                 vk = string.Empty;
             }
             else
             {
                 qk = string.Empty;
-                vk = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx][3].ToString() + "]";
+                vk = "Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex][3].ToString() + "]";
             }
-            destination = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["DestReg"].ToString());
+            destination = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString());
         }
 
 
@@ -1830,7 +1830,7 @@ namespace Tomasulo
                                 }
                                 else
                                 {
-                                    int DependentinstructionIdx;
+                                    int DependentInstructionIndex;
                                     for (int i = 0; i < dependenciesCounter; i++)
                                     {
                                         numOfDependentIns[i] = ReorderBuffer.GetIndex(DependentIns[i]);
@@ -1844,14 +1844,14 @@ namespace Tomasulo
                                         {
                                             dependenciesCounter--;
                                             nameOfDependentInstruction = DependentIns[i];
-                                            DependentinstructionIdx = 0;
+                                            DependentInstructionIndex = 0;
 
                                             for (int j = 0; j < InstructionStatusManager.ExecutionManagerDT().Rows.Count; j++)
                                             {
                                                 if (string.Compare(nameOfDependentInstruction, InstructionStatusManager.ExecutionManagerDT().Rows[j][1].ToString()) == 0)
                                                 {
-                                                    DependentinstructionIdx = j;
-                                                    CDBCycle[flag_2] = InstructionStatusManager.GetCDBCycle(DependentinstructionIdx);
+                                                    DependentInstructionIndex = j;
+                                                    CDBCycle[flag_2] = InstructionStatusManager.GetCDBCycle(DependentInstructionIndex);
                                                     flag_2++;
                                                 }
                                             }
@@ -2165,7 +2165,7 @@ namespace Tomasulo
             }
             else
             {
-                int DependentinstructionIdx;
+                int DependentInstructionIndex;
                 for (int i = 0; i < dependenciesCounter; i++)
                 {
                     numOfDependentIns[i] = ReorderBuffer.GetIndex(DependentIns[i]);
@@ -2180,14 +2180,14 @@ namespace Tomasulo
                     {
                         dependenciesCounter--;
                         nameOfDependentInstruction = DependentIns[i];
-                        DependentinstructionIdx = 0;
+                        DependentInstructionIndex = 0;
                         
                         for (int j = 0; j < InstructionStatusManager.ExecutionManagerDT().Rows.Count; j++)      //Resolving dependency
                         {
                             if (nameOfDependentInstruction.Equals(InstructionStatusManager.ExecutionManagerDT().Rows[j][1].ToString()))
                             {
-                                DependentinstructionIdx = j;
-                                CDBCycle[flag_2] = InstructionStatusManager.GetCDBCycle(DependentinstructionIdx);
+                                DependentInstructionIndex = j;
+                                CDBCycle[flag_2] = InstructionStatusManager.GetCDBCycle(DependentInstructionIndex);
                                 flag_2++;
                             }
                         }
@@ -2439,36 +2439,36 @@ namespace Tomasulo
         // Function name   : UpdateExecutionAndRob
         // Description     : updating Reorder buffer and ExecutionManager
         // Return type     : int 
-        // Argument        : int instructionIdx
+        // Argument        : int InstructionIndex
         // Argument        : int IterationNum
         // Argument        : int clock
         //============================================================
-        private int UpdateExecutionAndRob(int instructionIdx, int IterationNum, int clock)
+        private int UpdateExecutionAndRob(int InstructionIndex, int IterationNum, int clock)
         {
             int ROBIndex = 0;
 
-            if (instructionIdx > InstructionStatusManager.ExecutionManagerDT().Rows.Count -1)
+            if (InstructionIndex > InstructionStatusManager.ExecutionManagerDT().Rows.Count -1)
             {
                 return ROBIndex;
             }
-            if (int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][2].ToString())) != 0
-                && InstructionStatusManager.ExecutionCycle(instructionIdx) == 0
-                && int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][2].ToString()) != clock)
+            if (int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][2].ToString())) != 0
+                && InstructionStatusManager.ExecutionCycle(InstructionIndex) == 0
+                && int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][2].ToString()) != clock)
             {
-                InstructionStatusManager.Update(instructionIdx,
+                InstructionStatusManager.Update(InstructionIndex,
                     IterationNum,
                     currentInstName,
-                    int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][2].ToString())), clock,
-                    int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][4].ToString()),
-                    int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][5].ToString()),
-                    int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][6].ToString()), "");
+                    int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][2].ToString())), clock,
+                    int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][4].ToString()),
+                    int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][5].ToString()),
+                    int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][6].ToString()), "");
 
                 for (int j = 0; j < ReorderBuffer.ReorderBufferDT().Rows.Count; j++)
                 {
                     if (ReorderBuffer.ReorderBufferDT().Rows[j][2].ToString() == currentInstName)
                     {
                         ROBIndex = j;
-                        ReorderBuffer.Update((int)ROBIndex, true, currentInstName, "Execute", ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][4].ToString(), ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][5].ToString(), ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][6].ToString());
+                        ReorderBuffer.Update((int)ROBIndex, true, currentInstName, "Execute", ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][4].ToString(), ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][5].ToString(), ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][6].ToString());
                         j = ReorderBuffer.ReorderBufferDT().Rows.Count;
                     }
                 }
@@ -2482,35 +2482,35 @@ namespace Tomasulo
         // Function name   : HandleCommonDataBus
         // Description     : Handling CDB for given instruction number
         // Return type     : bool 
-        // Argument        : int instructionIdx
+        // Argument        : int InstructionIndex
         // Argument        : int numOfInsPerCycle
         // Argument        : int IterationNum
         // Argument        : int clock
         // Argument        : int numOfInsToCDB
         // Argument        : int? numofInsToCommit
         //============================================================
-        public bool HandleCommonDataBus(int instructionIdx, int numOfInsPerCycle, int IterationNum, int clock, int numOfInsToCDB, int? numofInsToCommit)
+        public bool HandleCommonDataBus(int InstructionIndex, int numOfInsPerCycle, int IterationNum, int clock, int numOfInsToCDB, int? numofInsToCommit)
         {
             int ROBIndex;
             string val;
-            val = "Mem[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceJ"].ToString() + " + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["SourceK"].ToString() + "]]";
-            currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString());
-            currentInstName = InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString();
+            val = "Mem[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString() + " + Regs[" + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString() + "]]";
+            currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString());
+            currentInstName = InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString();
             flag_2 = 0;
 
             if (numOfInsPerCycle != 1)
             {
-                if (clock >= instructionIdx)
+                if (clock >= InstructionIndex)
                 {
-                    ROBIndex = CDBGeneralHandle(instructionIdx, IterationNum, clock, numOfInsToCDB, val);
+                    ROBIndex = CDBGeneralHandle(InstructionIndex, IterationNum, clock, numOfInsToCDB, val);
                 }
             }
             else
             {
-                if (clock > instructionIdx)
+                if (clock > InstructionIndex)
                 {
 
-                    ROBIndex = CDBGeneralHandle(instructionIdx, IterationNum, clock, numOfInsToCDB, val);
+                    ROBIndex = CDBGeneralHandle(InstructionIndex, IterationNum, clock, numOfInsToCDB, val);
                 }
             }
             return true;
@@ -2521,13 +2521,13 @@ namespace Tomasulo
         // Function name   : CDBGeneralHandle
         // Description     : handling CDB and updating reorder budder index by given operation type
         // Return type     : int 
-        // Argument        : int instructionIdx
+        // Argument        : int InstructionIndex
         // Argument        : int IterationNum
         // Argument        : int clock
         // Argument        : int numOfInsToCDB
         // Argument        : string val
         //============================================================
-        private int CDBGeneralHandle(int instructionIdx, int IterationNum, int clock, int numOfInsToCDB, string val)
+        private int CDBGeneralHandle(int InstructionIndex, int IterationNum, int clock, int numOfInsToCDB, string val)
         {
             int ROBIndex =0;
             if (numOfUsedCDBCycles < numOfInsToCDB)
@@ -2535,19 +2535,19 @@ namespace Tomasulo
                 if (currentInstType.Equals("FP Add")
                     || currentInstType.Equals("FP Multiply"))
                 {
-                    ROBIndex = HandleCDBAddMULT(instructionIdx, IterationNum, clock);
+                    ROBIndex = HandleCDBAddMULT(InstructionIndex, IterationNum, clock);
                 }
                 else if (currentInstType.Equals("LD/SD"))
                 {
                     if (currentInstName.Equals("LD")
                         || currentInstName.Equals("L.D"))
                     {
-                        ROBIndex = HandleCDBLoad(instructionIdx, IterationNum, clock, val);
+                        ROBIndex = HandleCDBLoad(InstructionIndex, IterationNum, clock, val);
                     }
                 }
                 else if (currentInstType.Equals("Integer"))
                 {
-                    ROBIndex = HandleCDBINT(instructionIdx, IterationNum, clock);
+                    ROBIndex = HandleCDBINT(InstructionIndex, IterationNum, clock);
                 }
             }
             return ROBIndex;
@@ -2558,23 +2558,23 @@ namespace Tomasulo
         // Function name   : HandleCDBINT
         // Description     : handling CDB phase for integer operation
         // Return type     : int 
-        // Argument        : int instructionIdx
+        // Argument        : int InstructionIndex
         // Argument        : int IterationNum
         // Argument        : int clock
         //============================================================
-        private int HandleCDBINT(int instructionIdx, int IterationNum, int clock)
+        private int HandleCDBINT(int InstructionIndex, int IterationNum, int clock)
         {
             int ROBIndex=0;
-            if (clock > int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][3].ToString()) && int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][3].ToString()) != 0 && int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][5].ToString()) == 0)
+            if (clock > int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][3].ToString()) && int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][3].ToString()) != 0 && int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][5].ToString()) == 0)
             {
-                InstructionStatusManager.Update(instructionIdx, IterationNum, currentInstFullName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][2].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][3].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][4].ToString())), clock, 0, string.Empty);
+                InstructionStatusManager.Update(InstructionIndex, IterationNum, currentInstFullName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][2].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][3].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][4].ToString())), clock, 0, string.Empty);
 
                 for (int j = 0; j < ReorderBuffer.ReorderBufferDT().Rows.Count; j++)
                 {
                     if (ReorderBuffer.ReorderBufferDT().Rows[j][2].ToString() == currentInstFullName)
                     {
                         ROBIndex = j;
-                        ReorderBuffer.Update(ROBIndex, true, currentInstFullName, "Write CDB", ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][4].ToString(), ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][5].ToString(), ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][6].ToString());
+                        ReorderBuffer.Update(ROBIndex, true, currentInstFullName, "Write CDB", ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][4].ToString(), ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][5].ToString(), ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][6].ToString());
                         j = ReorderBuffer.ReorderBufferDT().Rows.Count;
                     }
                 }
@@ -2589,18 +2589,18 @@ namespace Tomasulo
         // Function name   : HandleCDBLoad
         // Description     : handling CDB phase for load/store operation
         // Return type     : int 
-        // Argument        : int instructionIdx
+        // Argument        : int InstructionIndex
         // Argument        : int IterationNum
         // Argument        : int clock
         // Argument        : string val
         //============================================================
-        private int HandleCDBLoad(int instructionIdx, int IterationNum, int clock, string val)
+        private int HandleCDBLoad(int InstructionIndex, int IterationNum, int clock, string val)
         {
             int ROBIndex=0;
-            if (ReorderBuffer.ReorderBufferDT().Rows[instructionIdx]["State"].ToString().Equals("Memory Read"))
+            if (ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex]["State"].ToString().Equals("Memory Read"))
             {
-                if (int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][4].ToString()) != 0
-                    && clock == (int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][4].ToString()) + 1))
+                if (int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][4].ToString()) != 0
+                    && clock == (int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][4].ToString()) + 1))
                 {
                     CDBNewCycle = clock;
                     while ((InstructionStatusManager.ExecutionManagerDT().Rows.Count) != flag_2)
@@ -2628,14 +2628,14 @@ namespace Tomasulo
 
                     if (CDBNewCycle == clock)
                     {
-                        InstructionStatusManager.Update(instructionIdx, IterationNum, currentInstFullName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][2].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][3].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][4].ToString())), clock, 0, string.Empty);
+                        InstructionStatusManager.Update(InstructionIndex, IterationNum, currentInstFullName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][2].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][3].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][4].ToString())), clock, 0, string.Empty);
 
                         for (int j = 0; j < ReorderBuffer.ReorderBufferDT().Rows.Count; j++)
                         {
                             if (ReorderBuffer.ReorderBufferDT().Rows[j][2].ToString() == currentInstFullName)
                             {
                                 ROBIndex = j;
-                                ReorderBuffer.Update(ROBIndex, true, currentInstFullName, "Write CDB", ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][4].ToString(), ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][5].ToString(), ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][6].ToString());
+                                ReorderBuffer.Update(ROBIndex, true, currentInstFullName, "Write CDB", ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][4].ToString(), ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][5].ToString(), ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][6].ToString());
                                 j = ReorderBuffer.ReorderBufferDT().Rows.Count;
 
                                 for (int t = 0; t < LoadBuffer.LoadBufferDT().Rows.Count; t++)
@@ -2660,24 +2660,24 @@ namespace Tomasulo
         // Function name   : HandleCDBAddMULT
         // Description     : handling CDB phase for Add/sub operation
         // Return type     : int 
-        // Argument        : int instructionIdx
+        // Argument        : int InstructionIndex
         // Argument        : int IterationNum
         // Argument        : int clock
         //============================================================
-        private int HandleCDBAddMULT(int instructionIdx, int IterationNum, int clock)
+        private int HandleCDBAddMULT(int InstructionIndex, int IterationNum, int clock)
         {
             int ROBIndex=0;
-            if ((ResevationStation.GetTimerOfIns(instructionIdx) - 1 == 0) || (ResevationStation.GetTimerOfIns(instructionIdx) == 0)
-            && (ReorderBuffer.ReorderBufferDT().Rows[instructionIdx]["State"].ToString().Equals("Execute")))
+            if ((ResevationStation.GetTimerOfIns(InstructionIndex) - 1 == 0) || (ResevationStation.GetTimerOfIns(InstructionIndex) == 0)
+            && (ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex]["State"].ToString().Equals("Execute")))
             {
-                InstructionStatusManager.Update(instructionIdx, IterationNum, currentInstFullName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][2].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][3].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][4].ToString())), clock, 0, string.Empty);
+                InstructionStatusManager.Update(InstructionIndex, IterationNum, currentInstFullName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][2].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][3].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][4].ToString())), clock, 0, string.Empty);
 
                 for (int j = 0; j < ReorderBuffer.ReorderBufferDT().Rows.Count; j++)
                 {
                     if (ReorderBuffer.ReorderBufferDT().Rows[j][2].ToString() == currentInstFullName)
                     {
                         ROBIndex = j;
-                        ReorderBuffer.Update(ROBIndex, true, currentInstFullName, "Write CDB", ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][4].ToString(), ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][5].ToString(), ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][6].ToString());
+                        ReorderBuffer.Update(ROBIndex, true, currentInstFullName, "Write CDB", ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][4].ToString(), ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][5].ToString(), ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][6].ToString());
                         j = ReorderBuffer.ReorderBufferDT().Rows.Count;
                     }
                 }
@@ -2719,19 +2719,19 @@ namespace Tomasulo
         // Function name   : Commit
         // Description     : Handling Commit phase for given instruction number
         // Return type     : bool 
-        // Argument        : int instructionIdx
+        // Argument        : int InstructionIndex
         // Argument        : int numOfInsPerCycle
         // Argument        : int IterationNum
         // Argument        : int clock
         // Argument        : int numOfInsToCDB
         // Argument        : int numofInsToCommit
         //============================================================
-        public bool Commit(int instructionIdx, int numOfInsPerCycle, int IterationNum, int clock, int numOfInsToCDB, int numofInsToCommit)
+        public bool Commit(int InstructionIndex, int numOfInsPerCycle, int IterationNum, int clock, int numOfInsToCDB, int numofInsToCommit)
         {
             string Register;
             bool isCommit = false;
 
-            if (instructionIdx == 0)
+            if (InstructionIndex == 0)
             {
                 isCommit = true;
             }
@@ -2752,17 +2752,17 @@ namespace Tomasulo
             {
                 if (isCommit)
                 {
-                    if (ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][3].ToString().Equals("Write CDB"))
+                    if (ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][3].ToString().Equals("Write CDB"))
                     {
-                        if (clock > int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][5].ToString()))
+                        if (clock > int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][5].ToString()))
                         {
-                            ReorderBuffer.Update(ReorderBuffer.GetIndex(ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][2].ToString()), 
-                                false, ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][2].ToString(), 
-                                "Commit", ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][4].ToString(), 
-                                ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][5].ToString(),
-                                ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][6].ToString());
+                            ReorderBuffer.Update(ReorderBuffer.GetIndex(ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][2].ToString()), 
+                                false, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][2].ToString(), 
+                                "Commit", ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][4].ToString(), 
+                                ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][5].ToString(),
+                                ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][6].ToString());
 
-                            Register = ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][4].ToString();
+                            Register = ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][4].ToString();
 
                             for (int j = 0; j < RegisterStatus.RegisterResultStatusDT().Columns.Count; j++)
                             {
@@ -2772,20 +2772,20 @@ namespace Tomasulo
                                 }
                             }
 
-                            InstructionStatusManager.Update(instructionIdx, 
+                            InstructionStatusManager.Update(InstructionIndex, 
                                 IterationNum, 
                                 currentInstFullName, 
-                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][2].ToString())), 
-                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][3].ToString())), 
-                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][4].ToString())), 
-                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][5].ToString())), 
+                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][2].ToString())), 
+                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][3].ToString())), 
+                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][4].ToString())), 
+                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][5].ToString())), 
                                 clock, 
                                 string.Empty);
 
-                            if (ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][6] != DBNull.Value)
+                            if (ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][6] != DBNull.Value)
                             {
                                 RegisterStatus.UpdateRegValue(
-                                    Register, ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][6].ToString().Split(new char[] { '=' })[1].Trim());
+                                    Register, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][6].ToString().Split(new char[] { '=' })[1].Trim());
                                 
                             }
            
@@ -2795,15 +2795,15 @@ namespace Tomasulo
                     }
                     else
                     {
-                        currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIdx]["Instruction Name"].ToString());
-                        if (ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][3].ToString().Equals("Execute"))
+                        currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString());
+                        if (ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][3].ToString().Equals("Execute"))
                         {
                             if (currentInstType.Equals("LD/SD") || currentInstType.Equals("Branch"))
                             {
-                                if (clock > int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][3].ToString()) && InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][7].ToString() == string.Empty)
+                                if (clock > int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][3].ToString()) && InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][7].ToString() == string.Empty)
                                 {
-                                    ReorderBuffer.Update(ReorderBuffer.GetIndex(ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][2].ToString()), false, ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][2].ToString(), "Commit", ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][4].ToString(), ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][5].ToString(), ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][6].ToString());
-                                    Register = ReorderBuffer.ReorderBufferDT().Rows[instructionIdx][4].ToString();
+                                    ReorderBuffer.Update(ReorderBuffer.GetIndex(ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][2].ToString()), false, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][2].ToString(), "Commit", ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][4].ToString(), ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][5].ToString(), ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][6].ToString());
+                                    Register = ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][4].ToString();
 
                                     for (int j = 0; j < RegisterStatus.RegisterResultStatusDT().Columns.Count; j++)
                                     {
@@ -2813,7 +2813,7 @@ namespace Tomasulo
                                         }
                                     }
 
-                                    InstructionStatusManager.Update(instructionIdx, IterationNum, currentInstFullName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][2].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][3].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][4].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIdx][5].ToString())), clock, string.Empty);
+                                    InstructionStatusManager.Update(InstructionIndex, IterationNum, currentInstFullName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][2].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][3].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][4].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][5].ToString())), clock, string.Empty);
                                     NumOfCommitedIns++;
                                 }
                             }
