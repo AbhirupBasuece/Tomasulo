@@ -58,7 +58,7 @@ namespace Tomasulo
             InstructionStatusManager.Refresh();
             InstructionFromInput.Refresh();
             dgvInstructionQueue.DataSource = null;
-            RegisterResultStatus.Refresh();
+            RegisterStatus.Refresh();
             InstructionStatusManager.ResetIsComment();
             run.ResetTimerFlag();
             Execution.SetInsIssued = false;
@@ -107,7 +107,7 @@ namespace Tomasulo
         private void BuildRegisterResultStatus()
         {
             
-            RegisterResultStatus registerResultStatus = new RegisterResultStatus();
+            RegisterStatus registerResultStatus = new RegisterStatus();
             Type t = registerResultStatus.GetType();
             PropertyInfo[] pi = t.GetProperties();
             foreach (PropertyInfo prop in pi)
@@ -117,9 +117,9 @@ namespace Tomasulo
             for (int i = 0; i < 64; i++)
             {
 
-              RegisterResultStatus.Insert(i+1,pi[i].GetValue(registerResultStatus,null).ToString());
+              RegisterStatus.Insert(i+1,pi[i].GetValue(registerResultStatus,null).ToString());
             }
-            this.dgvRegisterResultStatus.DataSource = RegisterResultStatus.RegisterResultStatusDT();
+            this.dgvRegisterResultStatus.DataSource = RegisterStatus.RegisterResultStatusDT();
         }
 
 

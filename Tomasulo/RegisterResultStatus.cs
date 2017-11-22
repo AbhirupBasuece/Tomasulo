@@ -6,7 +6,7 @@ using System.Data;
 
 namespace Tomasulo
 {
-    class RegisterResultStatus
+    class RegisterStatus
     {
         #region Members
         private string f0;
@@ -77,7 +77,7 @@ namespace Tomasulo
         #endregion
 
         #region Ctor
-        public RegisterResultStatus()
+        public RegisterStatus()
         {
             ConstructDataTable();
         } 

@@ -52,7 +52,7 @@ namespace Tomasulo
                
                 if (!string.IsNullOrEmpty(this.Controls["txt" + src].Text) && Decimal.TryParse(this.Controls["txt" + src].Text,out res))
                 {
-                    RegisterResultStatus.UpdateRegValue(src, this.Controls["txt" + src].Text);
+                    RegisterStatus.UpdateRegValue(src, this.Controls["txt" + src].Text);
                     RegValues.Add(src, this.Controls["txt" + src].Text); 
                 }
                 else
