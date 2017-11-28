@@ -12,8 +12,8 @@ namespace Tomasulo
         #region Members
         private string instructionName;
         private string destReg;
-        private string sourceJ;
-        private string sourceK;
+        private string source1;
+        private string source2;
         static DataTable instructionsFromInputDT; 
         #endregion
 
@@ -22,13 +22,13 @@ namespace Tomasulo
         {
             instructionName = string.Empty;
             destReg = string.Empty;
-            sourceJ = string.Empty;
-            sourceK = string.Empty;
+            source1 = string.Empty;
+            source2 = string.Empty;
             instructionsFromInputDT = new DataTable("DataInstructionCollection");
-            instructionsFromInputDT.Columns.Add("Instruction Name", typeof(string));
-            instructionsFromInputDT.Columns.Add("DestReg", typeof(string));
-            instructionsFromInputDT.Columns.Add("SourceJ", typeof(string));
-            instructionsFromInputDT.Columns.Add("SourceK", typeof(string));
+            instructionsFromInputDT.Columns.Add("Instruction_Name", typeof(string));
+            instructionsFromInputDT.Columns.Add("DestRegister", typeof(string));
+            instructionsFromInputDT.Columns.Add("Source1", typeof(string));
+            instructionsFromInputDT.Columns.Add("Source2", typeof(string));
         } 
         #endregion
 
@@ -61,11 +61,11 @@ namespace Tomasulo
         {
             get
             {
-                return sourceJ;
+                return source1;
             }
             set
             {
-                sourceJ = value;
+                source1 = value;
             }
         }
 
@@ -78,42 +78,42 @@ namespace Tomasulo
         {
             get
             {
-                return sourceK;
+                return source2;
             }
             set
             {
-                sourceK = value;
+                source2 = value;
             }
         } 
         #endregion
 
         #region Methods
 
-        public static bool Insert(string insName, string destReg, string sourceJ, string sourceK)
+        public static bool Insert(string insName, string destReg, string source_1, string source_2)       // Method to insert the values into the Datatable
         {
-            instructionsFromInputDT.Rows.Add(insName, destReg, sourceJ, sourceK);
+            instructionsFromInputDT.Rows.Add(insName, destReg, source_1, source_2);
             return true;
         }
 
-        public static bool Update(int index, string insName, string destReg, string sourceJ, string sourceK)
+        public static bool Update(int index, string insName, string destReg, string source_1, string source_2)  // method to update the DataTable
         {
-            instructionsFromInputDT.Rows[index]["Instruction Name"] = insName;
-            instructionsFromInputDT.Rows[index]["DestReg"] = destReg;
-            instructionsFromInputDT.Rows[index]["SourceJ"] = sourceJ;
-            instructionsFromInputDT.Rows[index]["SourceK"] = sourceK;
+            instructionsFromInputDT.Rows[index]["Instruction_Name"] = insName;
+            instructionsFromInputDT.Rows[index]["DestRegister"] = destReg;
+            instructionsFromInputDT.Rows[index]["Source1"] = source_1;
+            instructionsFromInputDT.Rows[index]["Source2"] = source_2;
             return true;
         }
 
-        public static bool Delete(int index)
+        public static bool Delete(int index)                        // method to delete instructions from the datatable if required after update
         {
-            instructionsFromInputDT.Rows[index]["Instruction Name"] = string.Empty;
-            instructionsFromInputDT.Rows[index]["DestReg"] = string.Empty;
-            instructionsFromInputDT.Rows[index]["SourceJ"] = string.Empty;
-            instructionsFromInputDT.Rows[index]["SourceK"] = string.Empty;
+            instructionsFromInputDT.Rows[index]["Instruction_Name"] = string.Empty;
+            instructionsFromInputDT.Rows[index]["DestRegister"] = string.Empty;
+            instructionsFromInputDT.Rows[index]["Source1"] = string.Empty;
+            instructionsFromInputDT.Rows[index]["Source2"] = string.Empty;
             return true;
         }
 
-        public static bool Refresh()
+        public static bool Refresh()            // DataTable being cleared of all values
         {
             instructionsFromInputDT.Rows.Clear();
             return true;

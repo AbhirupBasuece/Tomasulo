@@ -81,7 +81,7 @@ namespace Tomasulo
         }
 
 
-        public static void RefreshSet()                 // this method sets the default value every time the reset happens
+        public static void RefreshSet()               // this method sets the default value every time the reset happens
         {
             foreach (DataRow row in instructionSetDT.Rows)
 	        {

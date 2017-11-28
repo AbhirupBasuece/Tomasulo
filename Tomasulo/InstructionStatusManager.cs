@@ -9,14 +9,8 @@ namespace Tomasulo
     class InstructionStatusManager
     {
         #region Members
-        private int iteration;
-        private string instruction;
-        private int issuecycle;
-        private int execution;
-        private int memoryRead;
-        private int writeCDB;
-        private int commit;
-        private string comment;
+        private int iteration, issuecycle, execution,memRead, writeToCDB, commit;
+        private string instruction, comment;
         static DataTable executionManagerDT;
         private static bool[] IsComment; 
         #endregion
@@ -82,11 +76,11 @@ namespace Tomasulo
         {
             get
             {
-                return memoryRead;
+                return memRead;
             }
             set
             {
-                memoryRead = value;
+                memRead = value;
             }
         }
 
@@ -94,11 +88,11 @@ namespace Tomasulo
         {
             get
             {
-                return writeCDB;
+                return writeToCDB;
             }
             set
             {
-                writeCDB = value;
+                writeToCDB = value;
             }
         }
 
@@ -142,52 +136,46 @@ namespace Tomasulo
         }
 
 
-        //============================================================
-        // Function name   : Insert
-        // Description     : insert new entry into execution manager table -- need to update for reservation execution custom parameters **
-        // Return type     : static bool 
-        // Argument        : int iteration
-        // Argument        : string instruction
-        // Argument        : int issuecycle
-        // Argument        : int execution
-        // Argument        : int memoryRead
-        // Argument        : int writeCDB
-        // Argument        : int commit
-        // Argument        : string comment
-        //============================================================
-        public static bool Insert(int iteration, string instruction, int issuecycle, int execution, int memoryRead, int writeCDB, int commit, string comment)
+        /*------------------------------------------------------------------------------------
+         Function name   : Insert
+         Description     : insert new entry into execution manager table -- need to update for reservation execution custom parameters **
+         Return type     : static bool 
+         Argument        : int iteration, issuecycle, execution, memRead, writeToCDB, commit
+         Argument        : string instruction, comment
+        -------------------------------------------------------------------------------------*/
+        public static bool Insert(int iteration, string instruction, int issuecycle, int execution, int memRead, int writeToCDB, int commit, string comment)
         {
-            executionManagerDT.Rows.Add(iteration, instruction, issuecycle, execution, memoryRead, writeCDB, commit, comment);
+            executionManagerDT.Rows.Add(iteration, instruction, issuecycle, execution, memRead, writeToCDB, commit, comment);
             return true;
         }
 
 
-        //============================================================
-        // Function name   : Update
-        // Description     : update entry in execution manager table -- -- need to update for reservation execution custom parameters **
-        // Return type     : static bool 
-        // Argument        : int index
-        // Argument        : int iteration
-        // Argument        : string instruction
-        // Argument        : int issuecycle
-        // Argument        : int execution
-        // Argument        : int memoryRead
-        // Argument        : int writeCDB
-        // Argument        : int commit
-        // Argument        : string comment
-        //============================================================
-        public static bool Update(int index, int iteration, string instruction, int issuecycle, int execution, int memoryRead, int writeCDB, int commit, string comment)
+        /*--------------------------------------------------------------------------------------------
+         Function name   : Update
+         Description     : update entry in execution manager table -- -- need to update for reservation execution custom parameters **
+         Return type     : static bool 
+         Arguments       : int index, iteration, issueCycle, execution, memRead, writeToCDB, commit
+         Argument        : string instruction, comment
+        ----------------------------------------------------------------------------------------------*/
+        public static bool Update(int index, int iteration, string instruction, int issuecycle, int execution, int memRead, int writeToCDB, int commit, string comment)
         {
             executionManagerDT.Rows[index][0] = iteration;
             executionManagerDT.Rows[index][1] = instruction;
             executionManagerDT.Rows[index][2] = issuecycle;
             executionManagerDT.Rows[index][3] = execution;
-            executionManagerDT.Rows[index][4] = memoryRead;
-            executionManagerDT.Rows[index][5] = writeCDB;
+            executionManagerDT.Rows[index][4] = memRead;
+            executionManagerDT.Rows[index][5] = writeToCDB;
             executionManagerDT.Rows[index][6] = commit;
             executionManagerDT.Rows[index][7] = comment;
             return true;
         }
+
+       /*--------------------------------------------------------------------------------------------
+       Function name   : Delete
+       Description     : delete any entry in execution manager table 
+       Return type     : static bool 
+       Arguments       : int index
+       ---------------------------------------------------------------------------------------------*/
 
         public static bool Delete(int index)
         {
@@ -201,7 +189,11 @@ namespace Tomasulo
             executionManagerDT.Rows[index][7] = string.Empty;
             return true;
         }
-
+        /*--------------------------------------------------------------------------------------------
+        Function name   : Refresh
+        Description     : The table is cleared of all data
+        Return type     : static bool 
+        ---------------------------------------------------------------------------------------------*/
         public static bool Refresh()
         {
             executionManagerDT.Clear();
@@ -261,8 +253,8 @@ namespace Tomasulo
             instruction = string.Empty;
             issuecycle = 0;
             execution = 0;
-            memoryRead = 0;
-            writeCDB = 0;
+            memRead = 0;
+            writeToCDB = 0;
             commit = 0;
             comment = string.Empty;
             executionManagerDT = new DataTable("InstructionStatusDT");

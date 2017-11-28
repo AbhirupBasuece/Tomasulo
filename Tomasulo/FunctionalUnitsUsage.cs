@@ -49,7 +49,7 @@ namespace Tomasulo
             switch (InstructionName)
             {
                 case "FP Add":
-                    UpdateFPADD(clockCycle, instructionNum);
+                    UpdtFloatingPointAdd(clockCycle, instructionNum);
                     break;
                 case "FP Multiply":
                     UpdateFPMULT(clockCycle, instructionNum);
@@ -86,7 +86,7 @@ namespace Tomasulo
             }
         }
 
-        private static void UpdateFPADD(int clockCycle, int instructionNum)
+        private static void UpdtFloatingPointAdd(int clockCycle, int instructionNum)
         {
             Instruction = ConstructInstructionFullName(instructionNum);
             if (InstructionStatusManager.ExecutionCycle(instructionNum) == clockCycle)
