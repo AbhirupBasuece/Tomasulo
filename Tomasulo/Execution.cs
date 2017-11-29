@@ -9,28 +9,28 @@ namespace Tomasulo
     {
         #region members
 
-        private string currentInstType, prevInstType, currentInstName, currentInstFullName;         // member methods for storing data on Instruction type being executed
+        private string currentInstType, /*prevInstType,*/ currentInstName, currentInstFullName;         // member variable for storing data on Instruction type being executed
 
-        private int instNumberInQueue, issuePhaseCycles, exePhaseCyclesCount;          // member methods to control flow of execution on the operand
+        private int instNumberInQueue, issuePhaseCycles, exePhaseCyclesCount;          // member variables to control flow of execution on the operand
 
-        private bool ROBbusy, ResevationStationBusy, LoadBufferBusy;                                // member methods to maintain status of ROB during execution
+        private bool ROBbusy, ResevationStationBusy, LoadBufferBusy;                                // member variables to maintain status of ROB during execution
 
         private string destination;                                                                 
 
-        private static Dictionary<string, Dictionary<int, int>> addMulTimers;                       // DataStructure to operate on Mul operations
+        private static Dictionary<string, Dictionary<int, int>> addMulTimers;                       // DataStructure to operate on multiply operations
 
         static int clock;
-        private string result, calcResult, vj, vk, qj, qk;                                          // member methods to store the values from config files
+        private string result, calcResult, vj, vk, qj, qk;                                          // member variables to store the values from config files
 
-        private static int FPAdd, FPMultiply, instructionIndex, InstructionLatest;                  // member methods to store the value of MUL process in ROB during execution
+        private static int FPAdd, FPMultiply, instructionIndex, InstructionLatest;                  // member variables to store the value of MUL process in ROB during execution
         
-        private string[] comment;                                                                   // For updating comment in DataView
+        private string[] comment;                                                                   // for updating comment in DataView
         private string fullComment;
         private int timer;
 
-        private static int numOfUsedCDBCycles;                                                      // Universal member method to keep count on ROB cycles
+        private static int numOfUsedCDBCycles;                                                      // universal member variable to keep count on ROB cycles
 
-        private string[] DependentIns;        private int[] numOfDependentIns;          private int[] CDBCycle;     //member methods for handling loops
+        private string[] DependentIns;        private int[] numOfDependentIns;          private int[] CDBCycle;     //member variables for handling loops
 
         private string nameOfDependentInstruction;
         private int TempNumberOfDependecies;
@@ -39,11 +39,11 @@ namespace Tomasulo
         private int CDBNewCycle;
         private bool IsCDBCycle;
                                                                                                                     
-        private static int DifferentFUCounter;                                                       // member method for keeping track of the Functional Units               
+        private static int DifferentFUCounter;                                                       // member variables for keeping track of the Functional Units               
         private static int SameFUCounter;
         private static int IssuedInstCounter;
         private static bool IsInstructionIssued;
-        private static bool ThreeIssueInstHelperFlag;
+        //private static bool ThreeIssueInstHelperFlag;
         private static int NumOfCommitedIns;
         private bool Commit_2;
 
@@ -285,12 +285,12 @@ namespace Tomasulo
                     case 1:
                         HandleOneInsPerCycle(instructionIndex, iterationNumber, clock);
                         break;
-                    case 2:
+                   /* case 2:
                         HandleIssueTwoInsPerCycle(instructionIndex, numOfInsPerCycle, iterationNumber, clock);
                         break;
                     case 3:
                         HandleIssueThreeInsPerCycle(instructionIndex, numOfInsPerCycle, iterationNumber, clock);
-                        break;
+                        break; */
                     default:
                         break;
                 }
@@ -318,7 +318,7 @@ namespace Tomasulo
                 + ", " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString(); //Execution order differentiaL
         }
 
-
+/*
         // remove from here
         //============================================================
         // Function name   : HandleThreeInsPerCycle         
@@ -815,7 +815,7 @@ namespace Tomasulo
          Argument        : int numOfInsPerCycle
          Argument        : int IterationNum
          Argument        : int clock
-        ---------------------------------------------------------------------------------------------------*/
+        ---------------------------------------------------------------------------------------------------
         private void HandleIssueTwoInsPerCycle(int InstructionIndex, int numOfInsPerCycle, int IterationNum, int clock)
         {
             IsInstructionIssued = false;
@@ -1264,6 +1264,8 @@ namespace Tomasulo
 
        // till here
 
+*/
+
         /*-----------------------------------------------------------------------------------------------------------------------------------------
          Function name   : HandleOneInsPerCycle        
          Description     : this method handles the FU control for every given instruction by verifying the condition for one issue in every cycle.
@@ -1674,22 +1676,24 @@ namespace Tomasulo
         }
 
 
-        //=======================================================================================
-        // Function name   : Execute         
-        // Description     : handling the execution phase in the algorithm
-        //                   here  ExecutionManager , ROB and resevation stations will be updated
-        //                   also , here dependencies will be resolved.
-        // Return type     : void 
-        // Argument        : int instNo
-        // Argument        : int numOfInsPerCycle
-        // Argument        : int IterationNum
-        // Argument        : int clock
-        // Argument        : int? numOfInsToCDB
-        // Argument        : int? numofInsToCommit
-        //=======================================================================================
-        public void Execute(int instNo, int numOfInsPerCycle, int IterationNum, int clock, int? numOfInsToCDB, int? numofInsToCommit)
+        /*-----------------------------------------------------------------------------------------------
+         Function name   : Execute         
+         Description     : handling the execution phase in the algorithm
+                           here  ExecutionManager , ROB and resevation stations will be updated
+                           also , here dependencies will be resolved.
+         Return type     : void 
+         Argument        : int instNo
+         Argument        : int numOfInsPerCycle
+         Argument        : int IterationNum
+         Argument        : int clock
+         Argument        : int? numOfInsToCDB
+         Argument        : int? numofInsToCommit
+        --------------------------------------------------------------------------------------------------*/
+
+
+        public void Execute(int instNo, int numOfInsPerCycle, int IterationNum, int clk, int? numOfInsToCDB, int? numofInsToCommit)
         {
-            string PrevDdest;
+            string prevDdest;
             int ROBIndex = 0;
             int dependenciesCounter = 0;
             timer = 0;
@@ -1699,11 +1703,9 @@ namespace Tomasulo
 
             if (instNo == 0)
             {
-                if (clock == 2)
+                if (clk == 2)       // check this part before final demo
                 {
-                    InstructionStatusManager.Update(instNo, 
-                        IterationNum, 
-                        currentInstName, 
+                    InstructionStatusManager.Update(instNo, IterationNum, currentInstName, 
                         int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instNo][2].ToString())),
                         2, int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][4].ToString()), 
                         int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][5].ToString()), 
@@ -1721,16 +1723,16 @@ namespace Tomasulo
             {
                 if (numOfInsPerCycle != 1)
                 {
-                    if (clock >= instNo)
+                    if (clk >= instNo)
                     {
-                        ROBIndex = UpdateExecutionAndRob(instNo, IterationNum, clock);
+                        ROBIndex = UpdateExecutionAndRob(instNo, IterationNum, clk);
                     }
                 }
                 else
                 {
-                    if (clock > instNo)
+                    if (clk > instNo)
                     {
-                        ROBIndex = UpdateExecutionAndRob(instNo, IterationNum, clock);
+                        ROBIndex = UpdateExecutionAndRob(instNo, IterationNum, clk);
                     }
                 }
             }
@@ -1740,22 +1742,22 @@ namespace Tomasulo
                 {
                     if (InstructionStatusManager.ExecutionManagerDT().Rows.Count > instNo)
                     {
-                        if (clock > 2 && clock > (instNo - 1)
+                        if (clk > 2 && clk > (instNo - 1)
                             && InstructionStatusManager.ExecutionCycle(instNo) == 0)
                         {
-                            PrevDdest = InitAlgoTempVars(instNo, ref tempInst, ref tempInst2, ref dependenciesCounter);
+                            prevDdest = InitAlgoTempVars(instNo, ref tempInst, ref tempInst2, ref dependenciesCounter);
                             if (dependenciesCounter != 0)
                             {
-                                HandleDependencies(instNo, IterationNum, clock, ref ROBIndex, ref dependenciesCounter);
+                                HandleDependencies(instNo, IterationNum, clk, ref ROBIndex, ref dependenciesCounter);
                             }
                             else
                             {
                                 
-                                if (clock > (instNo))
+                                if (clk > (instNo))
                                 {
-                                    if (clock - int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][2].ToString()) == 1)
+                                    if (clk - int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][2].ToString()) == 1)
                                     {
-                                        exePhaseCyclesCount = clock;
+                                        exePhaseCyclesCount = clk;
                                         InstructionStatusManager.Update(instNo, IterationNum, currentInstName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instNo][2].ToString())), exePhaseCyclesCount, int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][4].ToString()), int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][5].ToString()), int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][6].ToString()), string.Empty);
                                         for (int j = 0; j < ReorderBuffer.ReorderBufferDT().Rows.Count; j++)
                                         {
@@ -1786,10 +1788,10 @@ namespace Tomasulo
                 {
                     if (InstructionStatusManager.ExecutionManagerDT().Rows.Count > instNo)
                     {
-                        if (clock > 2 && clock >= (instNo - 1)
+                        if (clk > 2 && clk >= (instNo - 1)
                             && InstructionStatusManager.ExecutionCycle(instNo) == 0)
                         {
-                            PrevDdest = InitAlgoTempVars(instNo, ref tempInst, ref tempInst2, ref dependenciesCounter);
+                            prevDdest = InitAlgoTempVars(instNo, ref tempInst, ref tempInst2, ref dependenciesCounter);
                             if (dependenciesCounter != 0)
                             {
                                 string tempComment;
@@ -1803,9 +1805,9 @@ namespace Tomasulo
                                     dependenciesCounter = 0;
                                     InstructionStatusManager.ExecutionManagerDT().Rows[instNo][7] = string.Empty;
 
-                                    if (clock - int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][2].ToString()) == 1)
+                                    if (clk - int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][2].ToString()) == 1)
                                     {
-                                        exePhaseCyclesCount = clock;
+                                        exePhaseCyclesCount = clk;
                                         InstructionStatusManager.Update(instNo, IterationNum, currentInstName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instNo][2].ToString())), exePhaseCyclesCount, int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][4].ToString()), int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][5].ToString()), int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][6].ToString()), string.Empty);
                                         for (int j = 0; j < ReorderBuffer.ReorderBufferDT().Rows.Count; j++)
                                         {
@@ -1876,7 +1878,7 @@ namespace Tomasulo
                                                 }
                                                 if (!Commit_2)
                                                 {
-                                                    if (clock > GetArrayMaxValue(CDBCycle))
+                                                    if (clk > GetArrayMaxValue(CDBCycle))
                                                     {
                                                         for (int e = 0; e < TempNumberOfDependecies; e++)
                                                         {
@@ -1884,7 +1886,7 @@ namespace Tomasulo
                                                         }
                                                         
                                                         flag_2 = 0;
-                                                        exePhaseCyclesCount = clock;
+                                                        exePhaseCyclesCount = clk;
                                                         InstructionStatusManager.Update(instNo, IterationNum, currentInstName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instNo][2].ToString())), exePhaseCyclesCount, int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][4].ToString()), int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][5].ToString()), int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][6].ToString()), "");
                                                         for (int j = 0; j < ReorderBuffer.ReorderBufferDT().Rows.Count; j++)
                                                         {
@@ -1933,15 +1935,15 @@ namespace Tomasulo
                                                     {
                                                         if (CommitCycles[r] > Max)
                                                         {
-                                                            Max = CommitCycles[r]; //Gets the commit cycle.
+                                                            Max = CommitCycles[r]; //Gets the commit cycle - check value during fp mul 
                                                         }
                                                     }
 
-                                                    if (clock > Max)
+                                                    if (clk > Max)
                                                     {
                                                         if (!Commit_2)
                                                         {
-                                                            ROBIndex = ExecuteMaxClock(instNo, IterationNum, clock, ROBIndex);
+                                                            ROBIndex = ExecuteMaxClock(instNo, IterationNum, clk, ROBIndex);
                                                         }
                                                         else
                                                         {
@@ -1966,9 +1968,9 @@ namespace Tomasulo
                                                                 }
                                                             }
 
-                                                            if (clock > Max)
+                                                            if (clk > Max)
                                                             {
-                                                                ROBIndex = ExecuteMaxClock(instNo, IterationNum, clock, ROBIndex);
+                                                                ROBIndex = ExecuteMaxClock(instNo, IterationNum, clk, ROBIndex);
                                                             }
                                                         }
                                                     }
@@ -1989,11 +1991,11 @@ namespace Tomasulo
                             }
                             else
                             {
-                                if (clock >= (instNo - 1))
+                                if (clk >= (instNo - 1))
                                 {
-                                    if (clock - int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][2].ToString()) == 1)
+                                    if (clk - int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][2].ToString()) == 1)
                                     {
-                                        exePhaseCyclesCount = clock;
+                                        exePhaseCyclesCount = clk;
                                         InstructionStatusManager.Update(instNo, IterationNum, currentInstName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instNo][2].ToString())), exePhaseCyclesCount, int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][4].ToString()), int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][5].ToString()), int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][6].ToString()), string.Empty);
                                         for (int j = 0; j < ReorderBuffer.ReorderBufferDT().Rows.Count; j++)
                                         {
@@ -2707,7 +2709,7 @@ namespace Tomasulo
             SameFUCounter = 0;
             IssuedInstCounter = 0;
             IsInstructionIssued = true;
-            ThreeIssueInstHelperFlag = false;
+            //ThreeIssueInstHelperFlag = false;
             NumOfCommitedIns = 0;
             Commit_2 = false;
             issuePhaseCycles = 0;
@@ -2726,12 +2728,12 @@ namespace Tomasulo
         // Argument        : int numOfInsToCDB
         // Argument        : int numofInsToCommit
         //============================================================
-        public bool Commit(int InstructionIndex, int numOfInsPerCycle, int IterationNum, int clock, int numOfInsToCDB, int numofInsToCommit)
+        public bool CommitInst(int instructionIndex, int insPerCycle, int iterationNum, int clock, int numOfInsToCDB, int numofInsToCommit)
         {
             string Register;
             bool isCommit = false;
 
-            if (InstructionIndex == 0)
+            if (instructionIndex == 0)
             {
                 isCommit = true;
             }
@@ -2752,17 +2754,17 @@ namespace Tomasulo
             {
                 if (isCommit)
                 {
-                    if (ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][3].ToString().Equals("Write CDB"))
+                    if (ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][3].ToString().Equals("Write CDB"))
                     {
-                        if (clock > int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][5].ToString()))
+                        if (clock > int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instructionIndex][5].ToString()))
                         {
-                            ReorderBuffer.Update(ReorderBuffer.GetIndex(ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][2].ToString()), 
-                                false, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][2].ToString(), 
-                                "Commit", ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][4].ToString(), 
-                                ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][5].ToString(),
-                                ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][6].ToString());
+                            ReorderBuffer.Update(ReorderBuffer.GetIndex(ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][2].ToString()), 
+                                false, ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][2].ToString(), 
+                                "Commit", ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][4].ToString(), 
+                                ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][5].ToString(),
+                                ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][6].ToString());
 
-                            Register = ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][4].ToString();
+                            Register = ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][4].ToString();
 
                             for (int j = 0; j < RegisterStatus.RegisterResultStatusDT().Columns.Count; j++)
                             {
@@ -2772,20 +2774,20 @@ namespace Tomasulo
                                 }
                             }
 
-                            InstructionStatusManager.Update(InstructionIndex, 
-                                IterationNum, 
+                            InstructionStatusManager.Update(instructionIndex, 
+                                iterationNum, 
                                 currentInstFullName, 
-                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][2].ToString())), 
-                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][3].ToString())), 
-                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][4].ToString())), 
-                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][5].ToString())), 
+                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIndex][2].ToString())), 
+                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIndex][3].ToString())), 
+                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIndex][4].ToString())), 
+                                int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIndex][5].ToString())), 
                                 clock, 
                                 string.Empty);
 
-                            if (ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][6] != DBNull.Value)
+                            if (ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][6] != DBNull.Value)
                             {
                                 RegisterStatus.UpdateRegValue(
-                                    Register, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][6].ToString().Split(new char[] { '=' })[1].Trim());
+                                    Register, ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][6].ToString().Split(new char[] { '=' })[1].Trim());
                                 
                             }
            
@@ -2795,15 +2797,15 @@ namespace Tomasulo
                     }
                     else
                     {
-                        currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString());
-                        if (ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][3].ToString().Equals("Execute"))
+                        currentInstType = InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIndex]["Instruction Name"].ToString());
+                        if (ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][3].ToString().Equals("Execute"))
                         {
                             if (currentInstType.Equals("LD/SD") || currentInstType.Equals("Branch"))
                             {
-                                if (clock > int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][3].ToString()) && InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][7].ToString() == string.Empty)
+                                if (clock > int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instructionIndex][3].ToString()) && InstructionStatusManager.ExecutionManagerDT().Rows[instructionIndex][7].ToString() == string.Empty)
                                 {
-                                    ReorderBuffer.Update(ReorderBuffer.GetIndex(ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][2].ToString()), false, ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][2].ToString(), "Commit", ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][4].ToString(), ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][5].ToString(), ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][6].ToString());
-                                    Register = ReorderBuffer.ReorderBufferDT().Rows[InstructionIndex][4].ToString();
+                                    ReorderBuffer.Update(ReorderBuffer.GetIndex(ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][2].ToString()), false, ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][2].ToString(), "Commit", ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][4].ToString(), ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][5].ToString(), ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][6].ToString());
+                                    Register = ReorderBuffer.ReorderBufferDT().Rows[instructionIndex][4].ToString();
 
                                     for (int j = 0; j < RegisterStatus.RegisterResultStatusDT().Columns.Count; j++)
                                     {
@@ -2813,7 +2815,7 @@ namespace Tomasulo
                                         }
                                     }
 
-                                    InstructionStatusManager.Update(InstructionIndex, IterationNum, currentInstFullName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][2].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][3].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][4].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[InstructionIndex][5].ToString())), clock, string.Empty);
+                                    InstructionStatusManager.Update(instructionIndex, iterationNum, currentInstFullName, int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIndex][2].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIndex][3].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIndex][4].ToString())), int.Parse((InstructionStatusManager.ExecutionManagerDT().Rows[instructionIndex][5].ToString())), clock, string.Empty);
                                     NumOfCommitedIns++;
                                 }
                             }

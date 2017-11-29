@@ -100,7 +100,7 @@ namespace Tomasulo
                 flag = false;
             }
 
-            execution.Commit(instructionNum, numOfInsPerCycle, iterationNum, clock, numOfInsToCDB, numOfInsToCommit);
+            execution.CommitInst(instructionNum, numOfInsPerCycle, iterationNum, clock, numOfInsToCDB, numOfInsToCommit);
 
             if (InstructionStatusManager.ExecutionManagerDT().Rows.Count > instructionNum)
             {
