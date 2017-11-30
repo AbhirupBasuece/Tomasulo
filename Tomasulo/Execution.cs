@@ -1711,9 +1711,7 @@ namespace Tomasulo
                         int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][5].ToString()), 
                         int.Parse(InstructionStatusManager.ExecutionManagerDT().Rows[instNo][6].ToString()), "");
                     
-                    ReorderBuffer.Update(0, true, 
-                        currentInstName, 
-                        "Execute", ReorderBuffer.ReorderBufferDT().Rows[instNo][4].ToString(),
+                    ReorderBuffer.Update(0, true, currentInstName, "Execute", ReorderBuffer.ReorderBufferDT().Rows[instNo][4].ToString( ),
                         ReorderBuffer.ReorderBufferDT().Rows[instNo][5].ToString(), ReorderBuffer.ReorderBufferDT().Rows[instNo][6].ToString());
                 }
                 return;
