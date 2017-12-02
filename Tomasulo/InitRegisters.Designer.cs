@@ -2,16 +2,14 @@
 {
     partial class InitRegisters
     {
-        /// <summary>
         /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
-        //if namespace.Tomasu// gotta try and implement a R0 = 0 hardwire if the register is for Integer s
+        private System.ComponentModel.IContainer components = null; //implementing a R0 = 0 hardwire if the register is for Integer
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+
+        /* <description>
+           Clean up any resources being used.
+           <end> */
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -23,10 +21,10 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        /* <IMP>
+         Required method for Designer support - do not modify
+         the contents of this method with the code editor.
+          <End Message>*/
         private void InitializeComponent()
         {
             this.lblR10 = new System.Windows.Forms.Label();

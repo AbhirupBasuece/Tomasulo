@@ -168,6 +168,9 @@ namespace Tomasulo
                 + ", " + InstructionFromInput.InstructionsFromInputDT().Rows[instIndex]["SourceJ"].ToString()
                 + ", "+ InstructionFromInput.InstructionsFromInputDT().Rows[instIndex]["SourceK"].ToString();
         }
+
+
+
         private static void LoadDefaults()
         {
             resourcesDT = new DataTable("Resources");
