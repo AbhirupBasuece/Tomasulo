@@ -71,7 +71,7 @@ namespace Tomasulo
 
         private static void UpdateCDB(int clockCycle, int instructionNum) // method to look at CDB and find out the respective ones
         {
-            Instruction = ConstructInstructionFullName(instructionNum);
+            Instruction = InstructionNameConstruct(instructionNum);
            
             if (InstructionStatusManager.GetCDBCycle(instructionNum) == clockCycle)
             {
@@ -88,7 +88,7 @@ namespace Tomasulo
 
         private static void UpdtFloatingPointAdd(int clockCycle, int instructionNum)
         {
-            Instruction = ConstructInstructionFullName(instructionNum);
+            Instruction = InstructionNameConstruct(instructionNum);
             if (InstructionStatusManager.ExecutionCycle(instructionNum) == clockCycle)
             {
                 if (string.Compare(resourcesDT.Rows[clockCycle - 1]["FP Add"].ToString(), string.Empty) == 0)
@@ -105,7 +105,7 @@ namespace Tomasulo
 
         private static void UpdateFPMULT(int clockCycle, int instructionNum)
         {
-            Instruction = ConstructInstructionFullName(instructionNum);
+            Instruction = InstructionNameConstruct(instructionNum);
             if (InstructionStatusManager.ExecutionCycle(instructionNum) == clockCycle)
             {
                 if (string.Compare(resourcesDT.Rows[clockCycle - 1]["FP Mult"].ToString(), string.Empty) == 0)
@@ -122,7 +122,7 @@ namespace Tomasulo
 
         private static void UpdateINT(int clockCycle, int instructionNum)
         {
-            Instruction = ConstructInstructionFullName(instructionNum);
+            Instruction = InstructionNameConstruct(instructionNum);
             if (InstructionStatusManager.ExecutionCycle(instructionNum) == clockCycle)
             {
                 if (string.Compare(resourcesDT.Rows[clockCycle - 1]["Integer ALU"].ToString(), string.Empty) == 0)
@@ -143,30 +143,30 @@ namespace Tomasulo
             {
                 if (InstructionStatusManager.MemoryReadCycle(instructionNum) == clockCycle)
                 {
-                    UpdateLDRow(clockCycle, instructionNum);
+                    FUCycleUpdate(clockCycle, instructionNum);
                 }
             }
             else
             {
                 if (InstructionStatusManager.CommitCycle(instructionNum) == clockCycle)
                 {
-                    UpdateLDRow(clockCycle, instructionNum);
+                    FUCycleUpdate(clockCycle, instructionNum);
                 }
             }
 
         }
-        //============================================================
-        // Function name   : ConstructInstructionFullName         
-        // Description     : constructing the long and full syntax of instruction
-        // Return type     : string 
-        // Argument        : int InstructionIndex
-        //============================================================
-        private static string ConstructInstructionFullName(int InstructionIndex)
+        /*--------------------------------------------------------------------------------
+         Function name   : InstructionNameConstruct        
+         Description     : method to reconstruct the complete istruction from the memory
+         Return type     : string 
+         Argument        : int instIndex
+        ---------------------------------------------------------------------------------*/
+        private static string InstructionNameConstruct(int instIndex)
         {
-            return InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["Instruction Name"].ToString()
-                + " " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["DestReg"].ToString()
-                + ", " + InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceJ"].ToString()
-                + ", "+ InstructionFromInput.InstructionsFromInputDT().Rows[InstructionIndex]["SourceK"].ToString();
+            return InstructionFromInput.InstructionsFromInputDT().Rows[instIndex]["Instruction Name"].ToString()
+                + " " + InstructionFromInput.InstructionsFromInputDT().Rows[instIndex]["DestReg"].ToString()
+                + ", " + InstructionFromInput.InstructionsFromInputDT().Rows[instIndex]["SourceJ"].ToString()
+                + ", "+ InstructionFromInput.InstructionsFromInputDT().Rows[instIndex]["SourceK"].ToString();
         }
         private static void LoadDefaults()
         {
@@ -179,11 +179,19 @@ namespace Tomasulo
             resourcesDT.Columns.Add("CDB", typeof(string));
             Instruction = string.Empty;
             InstructionName = string.Empty;
-        } 
+        }
 
-        private static void UpdateLDRow(int clockCycle, int instructionNum)
+
+        /*-------------------------------------------------------
+         Function name   : FUCycleUpdate       
+         Description     : method to update the status of the FU
+         Return type     : string 
+         Argument        : int instIndex
+         -------------------------------------------------------*/
+
+        private static void FUCycleUpdate(int clockCycle, int instructionNum)
         {
-            Instruction = ConstructInstructionFullName(instructionNum);
+            Instruction = InstructionNameConstruct(instructionNum);
             if (string.Compare(resourcesDT.Rows[clockCycle - 1]["Data Cache"].ToString(), string.Empty) == 0)
             {
                 resourcesDT.Rows[clockCycle - 1]["Data Cache"] = Instruction + ", ";
