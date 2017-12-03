@@ -155,7 +155,7 @@ namespace Tomasulo
          Description     : update entry in execution manager table -- -- need to update for reservation execution custom parameters **
          Return type     : static bool 
          Arguments       : int index, iteration, issueCycle, execution, memRead, writeToCDB, commit
-         Argument        : string instruction, comment
+         Arguments        : string instruction, comment
         ----------------------------------------------------------------------------------------------*/
         public static bool Update(int index, int iteration, string instruction, int issuecycle, int execution, int memRead, int writeToCDB, int commit, string comment)
         {

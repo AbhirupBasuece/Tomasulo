@@ -729,7 +729,7 @@ namespace Tomasulo
                            here  ExecutionManager , ROB and resevation stations will be updated
                            also , here dependencies will be resolved.
          Return type     : void 
-         Argument        : int instNo, numOfInst, ierationNum,clk, instructionCountToCDB, insCommit
+         Argumentss        : int instNo, numOfInst, ierationNum,clk, instructionCountToCDB, insCommit
         --------------------------------------------------------------------------------------------------*/
 
 
