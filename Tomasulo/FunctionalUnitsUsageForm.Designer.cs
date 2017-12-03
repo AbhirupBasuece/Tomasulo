@@ -39,7 +39,7 @@
             this.ResourcesGV.Size = new System.Drawing.Size(649, 336);
             this.ResourcesGV.TabIndex = 0;
             // 
-            // FuncuinalUnitsUsageForm
+            // FunctionalUnitsUsageForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
@@ -48,8 +48,8 @@
             this.Controls.Add(this.ResourcesGV);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FuncuinalUnitsUsageForm";
-            this.Text = "Funcuinal Units Usage";
+            this.Name = "FunctionalUnitsUsageForm";
+            this.Text = "Functional Units Usage";
             this.Load += new System.EventHandler(this.ResourcesForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.ResourcesGV)).EndInit();
             this.ResumeLayout(false);

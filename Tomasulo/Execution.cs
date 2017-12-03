@@ -22,7 +22,7 @@ namespace Tomasulo
         static int clock;
         private string result, calcResult, val2, val_2, val1, val_1;                                          // member variables to store the values from config files
 
-        private static int FPAdd, FPMultiply, instructionIndex, InstructionLatest;                  // member variables to store the value of MUL process in ROB during execution
+        private static int FPAdd, FPMultiply, instIndex, InstructionLatest;                  // member variables to store the value of MUL process in ROB during execution
         
         private string[] comment;                                                                   // for updating comment in DataView
         private string fullComment;
@@ -166,15 +166,15 @@ namespace Tomasulo
             }
         }
 
-        public int instructionIndexProp
+        public int InstructionIndexProp
         {
             get
             {
-                return instructionIndex;
+                return instIndex;
             }
             set
             {
-                instructionIndex = value;
+                instIndex = value;
             }
         }
 
@@ -270,7 +270,7 @@ namespace Tomasulo
                 }
                 else
                 {
-                    ResevationStationBusy = ResevationStation.IsResevationStationBusy();
+                    ResevationStationBusy = ResevationStation.CheckRSStatus();
                 }
 
                 ROBbusy = ReorderBuffer.IsROBBusy();
@@ -405,7 +405,7 @@ namespace Tomasulo
 
             if (issuePhaseCycles == clock)
             {
-                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("INTADD"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instIndex][0].ToString(), val2, val_2, val1, val_1, destination, instIndex);
+                ResevationStation.UpdateRSUpdate(ResevationStation.GetFirstFreeIndex("INTADD"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instIndex][0].ToString(), val2, val_2, val1, val_1, destination, instIndex);
             }
             if (issuePhaseCycles == clock)
             {
@@ -514,7 +514,7 @@ namespace Tomasulo
             {
                 destination = RegisterStatus.GetROBID(InstructionFromInput.InstructionsFromInputDT().Rows[instructionIndex]["DestReg"].ToString());
                 ReorderBuffer.Update(ReorderBuffer.GetBusyFalseItem(), true, currentInstFullName, "Issue", InstructionFromInput.InstructionsFromInputDT().Rows[instructionIndex][1].ToString(), result,calcResult);
-                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Multiply"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIndex][0].ToString(), val2, val_2, val1, val_1, destination, instructionIndex);
+                ResevationStation.UpdateRSUpdate(ResevationStation.GetFirstFreeIndex("FP Multiply"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instructionIndex][0].ToString(), val2, val_2, val1, val_1, destination, instructionIndex);
             }
         }
 
@@ -541,7 +541,7 @@ namespace Tomasulo
 
             if (issuePhaseCycles == clock)
             {
-                ResevationStation.UpdateResevationStations(ResevationStation.GetFirstFreeIndex("FP Add"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instIndex][0].ToString(), val2, val_2, val1, val_1, destination, instIndex);
+                ResevationStation.UpdateRSUpdate(ResevationStation.GetFirstFreeIndex("FP Add"), 0, true, InstructionFromInput.InstructionsFromInputDT().Rows[instIndex][0].ToString(), val2, val_2, val1, val_1, destination, instIndex);
             }
         }
 
@@ -814,7 +814,7 @@ namespace Tomasulo
                                             || InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString()).Equals("FP Multiply")
                                             || InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString()).Equals("Integer"))
                                         {
-                                            ResevationStation.UpdateResevationStations(ResevationStation.GetIndexOfIns(instNo), timer, true, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString(), val2, val_2, string.Empty, string.Empty, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["DestReg"].ToString(), instNo);
+                                            ResevationStation.UpdateRSUpdate(ResevationStation.GetIndexOfIns(instNo), timer, true, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString(), val2, val_2, string.Empty, string.Empty, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["DestReg"].ToString(), instNo);
                                         }
                                         return;
                                     }
@@ -864,7 +864,7 @@ namespace Tomasulo
                                             || InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString()).Equals("FP Multiply")
                                              || InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString()).Equals("Integer"))
                                         {
-                                            ResevationStation.UpdateResevationStations(ResevationStation.GetIndexOfIns(instNo), timer, true, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString(), val2, val_2, string.Empty, string.Empty, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["DestReg"].ToString(), instNo);
+                                            ResevationStation.UpdateRSUpdate(ResevationStation.GetIndexOfIns(instNo), timer, true, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString(), val2, val_2, string.Empty, string.Empty, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["DestReg"].ToString(), instNo);
                                         }
                                         return;
                                     }
@@ -944,7 +944,7 @@ namespace Tomasulo
                                                             &&!InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString()).Equals("Integer"))
                                                         {
                                                             SetReslovedDependenciesAlgoVars(instNo);
-                                                            ResevationStation.UpdateResevationStations(ResevationStation.GetIndexOfIns(instNo),
+                                                            ResevationStation.UpdateRSUpdate(ResevationStation.GetIndexOfIns(instNo),
                                                                 timer, true, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString()
                                                                 , val2, val_2, string.Empty, string.Empty,
                                                                 ReorderBuffer.ReorderBufferDT().Rows[ROBIndex][0].ToString(), instNo);
@@ -1051,7 +1051,7 @@ namespace Tomasulo
                                         if (InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString()).Equals("FP Add") || InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString()).Equals("FP Multiply")
                                             || InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString()).Equals("Integer"))
                                         {
-                                            ResevationStation.UpdateResevationStations(ResevationStation.GetIndexOfIns(instNo), 
+                                            ResevationStation.UpdateRSUpdate(ResevationStation.GetIndexOfIns(instNo), 
                                                 timer, true, 
                                                 InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString(), 
                                                 val2, val_2, string.Empty, string.Empty,
@@ -1098,7 +1098,7 @@ namespace Tomasulo
                 && !InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString()).Equals("Integer"))
             {
                 SetReslovedDependenciesAlgoVars(instNo);
-                ResevationStation.UpdateResevationStations(ResevationStation.GetIndexOfIns(instNo), timer, true, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString(), val2, val_2, string.Empty, string.Empty, RegisterStatus.RegisterResultStatusDT().Rows[0][InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["DestReg"].ToString()].ToString(), instNo);
+                ResevationStation.UpdateRSUpdate(ResevationStation.GetIndexOfIns(instNo), timer, true, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString(), val2, val_2, string.Empty, string.Empty, RegisterStatus.RegisterResultStatusDT().Rows[0][InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["DestReg"].ToString()].ToString(), instNo);
             }
             return ROBIndex;
         }
@@ -1274,7 +1274,7 @@ namespace Tomasulo
                                         && !InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString()).Equals("Integer"))
                                     {
                                         SetReslovedDependenciesAlgoVars(instNo);
-                                        ResevationStation.UpdateResevationStations(ResevationStation.GetIndexOfIns(instNo), timer, true, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString(), val2, val_2, string.Empty, string.Empty, RegisterStatus.RegisterResultStatusDT().Rows[0][InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["DestReg"].ToString()].ToString(), instNo);
+                                        ResevationStation.UpdateRSUpdate(ResevationStation.GetIndexOfIns(instNo), timer, true, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString(), val2, val_2, string.Empty, string.Empty, RegisterStatus.RegisterResultStatusDT().Rows[0][InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["DestReg"].ToString()].ToString(), instNo);
                                         return;
                                     }
                                 }
@@ -1386,7 +1386,7 @@ namespace Tomasulo
                 || InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString()).Equals("FP Multiply")
                 || InstructionSet.GetInstruction(InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString()).Equals("Integer"))
             {
-                ResevationStation.UpdateResevationStations(ResevationStation.GetIndexOfIns(instNo), timer, true, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString(), val2, val_2, string.Empty, string.Empty, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["DestReg"].ToString(), instNo);
+                ResevationStation.UpdateRSUpdate(ResevationStation.GetIndexOfIns(instNo), timer, true, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["Instruction Name"].ToString(), val2, val_2, string.Empty, string.Empty, InstructionFromInput.InstructionsFromInputDT().Rows[instNo]["DestReg"].ToString(), instNo);
             }
         }
 

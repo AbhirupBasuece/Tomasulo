@@ -18,7 +18,7 @@ namespace Tomasulo
         private string qj;
         private string qk;
         private string destination;
-        static DataTable resevationStationsDT; 
+        static DataTable reservationStationsDT; 
         #endregion
 
         #region Ctor
@@ -144,63 +144,92 @@ namespace Tomasulo
 
         public static DataTable ResevationStationsDT()
         {
-            return resevationStationsDT;
-        } 
+            return reservationStationsDT;
+        }
         #endregion
 
+
         #region Methods
-        public static bool UpdateResevationStations(int InstIndex, int timer, bool busy, string operation, string vj, string vk, string qj, string qk, string destination,int instructionNum)
+
+        /*---------------------------------------------------------------------------
+         Function name   : UpdateRS       
+         Description     : This method handles the update of the Reservation Stations 
+         Return type     : static void 
+        ---------------------------------------------------------------------------*/
+
+        public static bool UpdateRSUpdate(int instIndex, int timer, bool busy, string operation, string vj, string vk, string qj, string qk, string destination,int instructionNum)
         {
-            resevationStationsDT.Rows[InstIndex]["Timer"] = timer;
-            resevationStationsDT.Rows[InstIndex]["Busy"] = busy;
-            resevationStationsDT.Rows[InstIndex]["Operation"] = operation;
-            resevationStationsDT.Rows[InstIndex]["Vj"] = vj;
-            resevationStationsDT.Rows[InstIndex]["Vk"] = vk;
-            resevationStationsDT.Rows[InstIndex]["Qj"] = qj;
-            resevationStationsDT.Rows[InstIndex]["Qk"] = qk;
-            resevationStationsDT.Rows[InstIndex]["Destination"] = destination;
-            resevationStationsDT.Rows[InstIndex]["InstructionNum"] = instructionNum;
+            reservationStationsDT.Rows[instIndex]["Timer"] = timer;
+            reservationStationsDT.Rows[instIndex]["Busy"] = busy;
+            reservationStationsDT.Rows[instIndex]["Operation"] = operation;
+            reservationStationsDT.Rows[instIndex]["Vj"] = vj;
+            reservationStationsDT.Rows[instIndex]["Vk"] = vk;
+            reservationStationsDT.Rows[instIndex]["Qj"] = qj;
+            reservationStationsDT.Rows[instIndex]["Qk"] = qk;
+            reservationStationsDT.Rows[instIndex]["Destination"] = destination;
+            reservationStationsDT.Rows[instIndex]["InstructionNum"] = instructionNum;
             return true;
         }
 
-        public static bool DeleteResevationStationsRow(int InstIndex)
+        /*---------------------------------------------------------------------------
+         Function name   : ClearRS       
+         Description     : This method handles clears the Reservation Stations 
+         Return type     : static void 
+        ---------------------------------------------------------------------------*/
+
+
+        public static bool DeleteResevationStationsRow(int instIndex)
         {
-            resevationStationsDT.Rows[InstIndex]["Timer"] = 0;
-            resevationStationsDT.Rows[InstIndex]["Busy"] = false;
-            resevationStationsDT.Rows[InstIndex]["Operation"] = string.Empty;
-            resevationStationsDT.Rows[InstIndex]["Vj"] = string.Empty;
-            resevationStationsDT.Rows[InstIndex]["Vk"] = string.Empty;
-            resevationStationsDT.Rows[InstIndex]["Qj"] = string.Empty;
-            resevationStationsDT.Rows[InstIndex]["Qk"] = string.Empty;
-            resevationStationsDT.Rows[InstIndex]["Destination"] = string.Empty;
-            resevationStationsDT.Rows[InstIndex]["InstructionNum"] = DBNull.Value;
+            reservationStationsDT.Rows[instIndex]["Timer"] = 0;
+            reservationStationsDT.Rows[instIndex]["Busy"] = false;
+            reservationStationsDT.Rows[instIndex]["Operation"] = string.Empty;
+            reservationStationsDT.Rows[instIndex]["Vj"] = string.Empty;
+            reservationStationsDT.Rows[instIndex]["Vk"] = string.Empty;
+            reservationStationsDT.Rows[instIndex]["Qj"] = string.Empty;
+            reservationStationsDT.Rows[instIndex]["Qk"] = string.Empty;
+            reservationStationsDT.Rows[instIndex]["Destination"] = string.Empty;
+            reservationStationsDT.Rows[instIndex]["InstructionNum"] = DBNull.Value;
             return true;
         }
 
-        public static bool Delete()
+        /*-----------------------------------------------------------------------------------------------------------
+          Function name   : ResetRS       
+          Description     : This method handles resets the Reservation Stations after the completion of the execution 
+          Return type     : static void 
+        ------------------------------------------------------------------------------------------------------------*/
+
+
+        public static bool ResetRS()
         {
             for (int i = 0; i < 7; i++)
             {
-                resevationStationsDT.Rows[i]["Timer"] = 0;
-                resevationStationsDT.Rows[i]["Busy"] = false;
-                resevationStationsDT.Rows[i]["Operation"] = string.Empty;
-                resevationStationsDT.Rows[i]["Vj"] = string.Empty;
-                resevationStationsDT.Rows[i]["Vk"] = string.Empty;
-                resevationStationsDT.Rows[i]["Qj"] = string.Empty;
-                resevationStationsDT.Rows[i]["Qk"] = string.Empty;
-                resevationStationsDT.Rows[i]["Destination"] = string.Empty;
-                resevationStationsDT.Rows[i]["InstructionNum"] = DBNull.Value;
+                reservationStationsDT.Rows[i]["Timer"] = 0;
+                reservationStationsDT.Rows[i]["Busy"] = false;
+                reservationStationsDT.Rows[i]["Operation"] = string.Empty;
+                reservationStationsDT.Rows[i]["Vj"] = string.Empty;
+                reservationStationsDT.Rows[i]["Vk"] = string.Empty;
+                reservationStationsDT.Rows[i]["Qj"] = string.Empty;
+                reservationStationsDT.Rows[i]["Qk"] = string.Empty;
+                reservationStationsDT.Rows[i]["Destination"] = string.Empty;
+                reservationStationsDT.Rows[i]["InstructionNum"] = DBNull.Value;
             }
             return true;
         }
 
-        public static bool IsResevationStationBusy()
+        /*--------------------------------------------------------------------------------------------
+          Function name   : CheckRSStatus       
+          Description     : This method checks the status of the RS during the exeution of the program
+          Return type     : static void 
+        --------------------------------------------------------------------------------------------*/
+
+
+        public static bool CheckRSStatus()
         {
             int numOfBusyRows = 0;
 
-            for (int i = 0; i < resevationStationsDT.Rows.Count; i++)
+            for (int i = 0; i < reservationStationsDT.Rows.Count; i++)
             {
-                if (resevationStationsDT.Rows[i]["Busy"].ToString() == "True")
+                if (reservationStationsDT.Rows[i]["Busy"].ToString() == "True")
                 {
                     numOfBusyRows++;
                 }
@@ -222,14 +251,14 @@ namespace Tomasulo
             {
                 if (typeOfIns == "FP Add")
                 {
-                    if (resevationStationsDT.Rows[i]["Busy"].ToString() == "False" && ((string.Compare("ADD1", resevationStationsDT.Rows[i]["Name"].ToString()) == 0) || (string.Compare("ADD2", resevationStationsDT.Rows[i]["Name"].ToString()) == 0) || (string.Compare("ADD3", resevationStationsDT.Rows[i]["Name"].ToString()) == 0)))
+                    if (reservationStationsDT.Rows[i]["Busy"].ToString() == "False" && ((string.Compare("ADD1", reservationStationsDT.Rows[i]["Name"].ToString()) == 0) || (string.Compare("ADD2", reservationStationsDT.Rows[i]["Name"].ToString()) == 0) || (string.Compare("ADD3", reservationStationsDT.Rows[i]["Name"].ToString()) == 0)))
                     {
                         return i;
                     }
                 }
                 else if (typeOfIns == "FP Multiply")
                 {
-                    if (resevationStationsDT.Rows[i]["Busy"].ToString() == "False" && ((string.Compare("MULT1", resevationStationsDT.Rows[i]["Name"].ToString()) == 0) || string.Compare("MULT2", resevationStationsDT.Rows[i]["Name"].ToString()) == 0))
+                    if (reservationStationsDT.Rows[i]["Busy"].ToString() == "False" && ((string.Compare("MULT1", reservationStationsDT.Rows[i]["Name"].ToString()) == 0) || string.Compare("MULT2", reservationStationsDT.Rows[i]["Name"].ToString()) == 0))
                     {
 
                         return i;
@@ -237,7 +266,7 @@ namespace Tomasulo
                 }
                 else if (typeOfIns == "INTADD")
                 {
-                    if (resevationStationsDT.Rows[i]["Busy"].ToString() == "False" && ((string.Compare("INTADD1", resevationStationsDT.Rows[i]["Name"].ToString()) == 0) || string.Compare("INTADD2", resevationStationsDT.Rows[i]["Name"].ToString()) == 0))
+                    if (reservationStationsDT.Rows[i]["Busy"].ToString() == "False" && ((string.Compare("INTADD1", reservationStationsDT.Rows[i]["Name"].ToString()) == 0) || string.Compare("INTADD2", reservationStationsDT.Rows[i]["Name"].ToString()) == 0))
                     {
                         return i;
                     }
@@ -249,8 +278,8 @@ namespace Tomasulo
         {
             for (int i = 0; i < 7; i++)
             {
-                if (resevationStationsDT.Rows[i]["InstructionNum"] != DBNull.Value
-                    &&( int)resevationStationsDT.Rows[i]["InstructionNum"] == InstructionNumber)
+                if (reservationStationsDT.Rows[i]["InstructionNum"] != DBNull.Value
+                    &&( int)reservationStationsDT.Rows[i]["InstructionNum"] == InstructionNumber)
                 {
                     return i;
                     
@@ -262,13 +291,13 @@ namespace Tomasulo
         {
             for (int i = 0; i < 7; i++)
             {
-                if (resevationStationsDT.Rows[i]["InstructionNum"] != DBNull.Value
-                    && (int)resevationStationsDT.Rows[i]["InstructionNum"] == InstructionNumber)
+                if (reservationStationsDT.Rows[i]["InstructionNum"] != DBNull.Value
+                    && (int)reservationStationsDT.Rows[i]["InstructionNum"] == InstructionNumber)
                 {
                     return i;
                     
                 }
-                else if (resevationStationsDT.Rows[i]["Operation"].ToString() == Instruction)
+                else if (reservationStationsDT.Rows[i]["Operation"].ToString() == Instruction)
                 {
 
                 }
@@ -280,10 +309,10 @@ namespace Tomasulo
         {
             for (int i = 0; i < 7; i++)
             {
-                if (resevationStationsDT.Rows[i]["InstructionNum"] != DBNull.Value
-                    && (int)resevationStationsDT.Rows[i]["InstructionNum"] == InstructionNumber)
+                if (reservationStationsDT.Rows[i]["InstructionNum"] != DBNull.Value
+                    && (int)reservationStationsDT.Rows[i]["InstructionNum"] == InstructionNumber)
                 {
-                    return int.Parse(resevationStationsDT.Rows[i]["Timer"].ToString());
+                    return int.Parse(reservationStationsDT.Rows[i]["Timer"].ToString());
                 }
             }
             return 0;
@@ -292,14 +321,14 @@ namespace Tomasulo
         {
             for (int i = 0; i < 7; i++)
             {
-                if (resevationStationsDT.Rows[i]["InstructionNum"] != DBNull.Value
-                    && (int)resevationStationsDT.Rows[i]["InstructionNum"] == InstructionNumber)
+                if (reservationStationsDT.Rows[i]["InstructionNum"] != DBNull.Value
+                    && (int)reservationStationsDT.Rows[i]["InstructionNum"] == InstructionNumber)
                 {
-                    return int.Parse(resevationStationsDT.Rows[i]["Timer"].ToString());
+                    return int.Parse(reservationStationsDT.Rows[i]["Timer"].ToString());
                 }
-                else if (resevationStationsDT.Rows[i]["Operation"].ToString() == Instruction)
+                else if (reservationStationsDT.Rows[i]["Operation"].ToString() == Instruction)
                 {
-                    return int.Parse(resevationStationsDT.Rows[i]["Timer"].ToString());
+                    return int.Parse(reservationStationsDT.Rows[i]["Timer"].ToString());
                 }
             }
             return 0;
@@ -315,28 +344,28 @@ namespace Tomasulo
             qj = string.Empty;
             qk = string.Empty;
             destination = string.Empty;
-            resevationStationsDT = new DataTable("ResevationStations");
-            resevationStationsDT.Columns.Add("Timer", typeof(int));
-            resevationStationsDT.Columns.Add("Name", typeof(string));
-            resevationStationsDT.Columns.Add("Busy", typeof(bool));
-            resevationStationsDT.Columns.Add("Operation", typeof(string));
-            resevationStationsDT.Columns.Add("Vj", typeof(string));
-            resevationStationsDT.Columns.Add("Vk", typeof(string));
-            resevationStationsDT.Columns.Add("Qj", typeof(string));
-            resevationStationsDT.Columns.Add("Qk", typeof(string));
-            resevationStationsDT.Columns.Add("Destination", typeof(string));
-            resevationStationsDT.Columns.Add("InstructionNum", typeof(int));
-            resevationStationsDT.Rows.Add(0, "ADD1", false);
-            resevationStationsDT.Rows.Add(0, "ADD2", false);
-            resevationStationsDT.Rows.Add(0, "ADD3", false);
-            resevationStationsDT.Rows.Add(0, "MULT1", false);
-            resevationStationsDT.Rows.Add(0, "MULT2", false);
-            resevationStationsDT.Rows.Add(0, "INTADD1", false);
-            resevationStationsDT.Rows.Add(0, "INTADD2", false);
+            reservationStationsDT = new DataTable("ResevationStations");
+            reservationStationsDT.Columns.Add("Timer", typeof(int));
+            reservationStationsDT.Columns.Add("Name", typeof(string));
+            reservationStationsDT.Columns.Add("Busy", typeof(bool));
+            reservationStationsDT.Columns.Add("Operation", typeof(string));
+            reservationStationsDT.Columns.Add("Vj", typeof(string));
+            reservationStationsDT.Columns.Add("Vk", typeof(string));
+            reservationStationsDT.Columns.Add("Qj", typeof(string));
+            reservationStationsDT.Columns.Add("Qk", typeof(string));
+            reservationStationsDT.Columns.Add("Destination", typeof(string));
+            reservationStationsDT.Columns.Add("InstructionNum", typeof(int));
+            reservationStationsDT.Rows.Add(0, "ADD1", false);
+            reservationStationsDT.Rows.Add(0, "ADD2", false);
+            reservationStationsDT.Rows.Add(0, "ADD3", false);
+            reservationStationsDT.Rows.Add(0, "MULT1", false);
+            reservationStationsDT.Rows.Add(0, "MULT2", false);
+            reservationStationsDT.Rows.Add(0, "INTADD1", false);
+            reservationStationsDT.Rows.Add(0, "INTADD2", false);
         } 
         public static bool UpdateTimer(int index, int timer)
         {
-            resevationStationsDT.Rows[index]["Timer"] = timer;
+            reservationStationsDT.Rows[index]["Timer"] = timer;
             return true;
         }
         #endregion

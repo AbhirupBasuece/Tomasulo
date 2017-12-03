@@ -133,7 +133,7 @@ namespace Tomasulo
                         ///
                         TimerFlag[ResevationStation.GetIndexOfIns(instructionNum)] = false;
                         ///
-                        execution.instructionIndexProp = ResevationStation.GetIndexOfIns(instructionNum);
+                        execution.InstructionIndexProp = ResevationStation.GetIndexOfIns(instructionNum);
 
                     }
                 }
@@ -187,7 +187,7 @@ namespace Tomasulo
                         ///
                         TimerFlag[ResevationStation.GetIndexOfIns(instructionNum)] = false;
                         ///
-                        execution.instructionIndexProp = ResevationStation.GetIndexOfIns(instructionNum);
+                        execution.InstructionIndexProp = ResevationStation.GetIndexOfIns(instructionNum);
                     }
                 }
                 else
@@ -212,7 +212,7 @@ namespace Tomasulo
                         ///
                         TimerFlag[ResevationStation.GetIndexOfIns(instructionNum)] = false;
                         ///
-                        execution.instructionIndexProp = ResevationStation.GetIndexOfIns(instructionNum);
+                        execution.InstructionIndexProp = ResevationStation.GetIndexOfIns(instructionNum);
                     }
                 }
                 else

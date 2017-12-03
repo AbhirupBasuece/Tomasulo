@@ -71,16 +71,7 @@ namespace Tomasulo
             }
         }
 
-        //private void ResourcesForm_Load(object sender, EventArgs e)
-        //{
-        //   // ResourcesGV.DataSource = FuncuinalUnitsUsage.FUUsageDT();
-        //}
-
-        //public static void updateResourceTable(int iteration, int clockCycle, int instructioNum)
-        //{
-        //    FuncuinalUnitsUsage.Update(iteration, clockCycle, instructioNum);
-        //}
-
+        
 
     }
 }

@@ -54,7 +54,7 @@ namespace Tomasulo
             InstructionSet.RefreshSet();
             LoadBuffer.Refresh();
             ReorderBuffer.Refresh();
-            ResevationStation.Delete();
+            ResevationStation.ResetRS();
             InstructionStatusManager.Refresh();
             InstructionFromInput.Refresh();
             dgvInstructionQueue.DataSource = null;
