@@ -1070,17 +1070,13 @@ namespace Tomasulo
         }
 
 
-        //============================================================
+        /*--------------------------------------------------------------------------------------------------
         // Function name   : ExecuteClkEnd
-        // Description     : This method is required to execute till 
-        //                   the end of the clock cycle so that that 
+        // Description     : This method is required to execute till the end of the clock cycle so that that 
         //                   final state of registers can be obtained.
         // Return type     : int 
-        // Argument        : int instNo
-        // Argument        : int IterationNum
-        // Argument        : int clock
-        // Argument        : int ROBIndex
-        //============================================================
+        // Argument        : int instNo, iterationNum, ROBIndex
+        ----------------------------------------------------------------------------------------------------*/
         private int ExecuteClkEnd(int instNo, int IterationNum, int clock, int ROBIndex)
         {
             flag_2 = 0;

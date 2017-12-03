@@ -169,6 +169,11 @@ namespace Tomasulo
                 + ", "+ InstructionFromInput.InstructionsFromInputDT().Rows[instIndex]["SourceK"].ToString();
         }
 
+        /*--------------------------------------------------------------------------------
+         Function name   : InstructionNameConstruct        
+         Description     : method to initialize the member variables with default values
+         Return type     : void
+        ---------------------------------------------------------------------------------*/
 
 
         private static void LoadDefaults()
@@ -185,12 +190,12 @@ namespace Tomasulo
         }
 
 
-        /*-------------------------------------------------------
+        /*---------------------------------------------------------------------------------------------------
          Function name   : FUCycleUpdate       
-         Description     : method to update the status of the FU
+         Description     : method to update the status of the FU as the instructions keep on getting executed.
          Return type     : string 
          Argument        : int instIndex
-         -------------------------------------------------------*/
+         --------------------------------------------------------------------------------------------------*/
 
         private static void FUCycleUpdate(int clockCycle, int instructionNum)
         {
